@@ -1,0 +1,72 @@
+/* footer.component.css */
+
+footer{
+  margin-top: 100px;
+}
+.footer {
+  /* margin-top: 100px; */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: black;
+  color: whitesmoke;
+  padding: 15px 0;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  text-align: center;
+}
+
+.footer-item {
+  flex: 1;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 10px 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.footer-item i {
+  font-size: 22px;
+  display: block;
+  margin-bottom: 5px;
+  /* color: whitesmoke; */
+}
+
+.footer-item.active i{
+  color: green;
+}
+.footer-item span{
+  color: wheat;
+}
+
+/* Hover Effect */
+.footer-item:hover {
+  background-color: black;
+  color: green;
+  border-radius: 8px;
+}
+
+/* Control visibility on smaller screens */
+.footer-item.show {
+  display: block;
+}
+
+/* Hide all footer items except the 'More' icon on small screens */
+@media (max-width: 768px) {
+  .footer-item {
+    display: none; /* Hide all items by default */
+  }
+
+  /* Show items when 'showRoutes' is true */
+  .footer-item.show {
+    display: block; /* Show items based on Angular class binding */
+  }
+
+  .more-icon {
+    display: block; /* Show the hamburger menu */
+  }
+}

@@ -1,0 +1,32 @@
+<!-- footer.component.html -->
+<footer class="footer">
+  <!-- Home Route -->
+  <a href="/home" class="footer-item" [class.show]="showRoutes || !isSmallScreen" [class.active]="isActiveRoute('home')">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+  </a>
+  
+  <!-- Search Route -->
+  <a href="/search" class="footer-item" [class.show]="showRoutes || !isSmallScreen" [class.active]="isActiveRoute('search')">
+    <i class="fas fa-search"></i>
+    <span>Search</span>
+  </a>
+  
+  <!-- Routes Route -->
+  <a href="/route" class="footer-item" [class.show]="showRoutes || !isSmallScreen" [class.active]="isActiveRoute('route')">
+    <i class="fas fa-route"></i>
+    <span>Routes</span>
+  </a>
+  
+  <!-- Buses Route -->
+  <a href="buses" class="footer-item" [class.show]="showRoutes || !isSmallScreen" [class.active]="isActiveRoute('buses')">
+    <i class="fas fa-bus"></i>
+    <span>Buses</span>
+  </a>
+  
+  <!-- More (Hamburger) Icon - Only on small screens -->
+  <a href="#" class="footer-item more-icon" (click)="toggleRoutes()" *ngIf="isSmallScreen">
+    <i class="fas fa-bars"></i>
+    <span>More</span>
+  </a>
+</footer>

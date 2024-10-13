@@ -1,0 +1,51 @@
+<div class="container">
+  <!-- Search Header -->
+  <div class="search-header wow fadeIn" data-wow-delay="0.1s">
+    <div class="search-bar">
+      <i class="fa fa-search" (click)="onSearch()"></i>
+      <input type="text" placeholder="From" id="fromInput" #fromInput />
+      <input type="text" placeholder="To" id="toInput" #toInput />
+    </div>
+    <div class="cancel-button" (click)="clearInput()">Cancel</div>
+    <button class="toggle-sidebar-btn" (click)="toggleSidebar()" *ngIf="searchResults.length > 0" id="toggleSidebarBtn">
+      {{ isSidebarOpen ? 'Hide History' : 'Show History' }}
+    </button>
+  </div>
+
+  <!-- Backdrop for overlay effect -->
+  <div class="backdrop" [class.active]="isSidebarOpen" (click)="toggleSidebar()"></div>
+
+  <!-- Sidebar for Search History -->
+  <div class="sidebar wow fadeIn" data-wow-delay="0.3s" [class.open]="isSidebarOpen" id="sidebar">
+    <div class="section-header" *ngIf="searchResults.length > 0">
+      <p>Search History</p>
+      <button class="clear-history-btn" (click)="clearSearchHistory()">Clear History</button>
+    </div>
+    <div class="recent-searches">
+      <ul class="routes-list">
+        <li class="route-item" *ngFor="let result of searchResults; let i = index">
+          <div class="details">
+            <strong>{{ result.start }} to {{ result.end }}</strong>
+            <p>Expected Arrival: {{ result.expectedArrival }}</p>
+            <p>Expected Drop-off: {{ result.expectedDropOff }}</p>
+            <p>Duration: {{ result.duration }}</p>
+          </div>
+          <button (click)="removeSearchQuery(i)" class="remove-btn">
+            <i class="fa fa-trash"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Browse all routes section -->
+  <div class="section-header wow fadeIn" data-wow-delay="0.5s">Routes</div>
+  <div class="button-browse wow fadeIn" data-wow-delay="0.6s">
+    <a href="/route">Browse all routes</a>
+  </div>
+
+  <!-- Search Results Section -->
+  <div class="section-header wow fadeIn" data-wow-delay="0.7s" *ngIf="searchResults.length > 0">
+    <p>Search Results</p>
+  </div>
+</div>

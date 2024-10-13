@@ -1,0 +1,56 @@
+/* bus-list.component.css */
+
+.bus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between bus items */
+  margin: 15px; /* Margin around the bus list */
+}
+
+.bus-item {
+  /* width: 100px; */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  padding: 10px; /* Padding inside each bus item */
+  background-color: rgb(79, 78, 78); /* Dark background */
+  color: white; /* Text color */
+  border-radius: 5px; /* Rounded corners */
+}
+
+.bus-header {
+  display: flex;
+  align-items: center; /* Align header items vertically */
+}
+
+.bus-icon {
+  background-color:  rgb(18, 137, 11); /* Icon background color */
+  width: 40px; /* Icon width */
+  height: 40px; /* Icon height */
+  border-radius: 50%; /* Circle shape */
+  display: flex; /* Use flex to center icon */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  color: white; /* Icon color */
+  margin-right: 10px; /* Space between icon and title */
+}
+
+.bus-title {
+  margin: 0; /* Remove default margin */
+  font-size: 20px; /* Font size for title */
+  font-weight: bold; /* Bold title */
+}
+
+.bus-description {
+  margin: 0; /* Remove default margin */
+  font-size: 14px; /* Font size for description */
+  color: #b0bec5; /* Lighter color for description */
+}
+
+.bus-content {
+  margin-top: 10px; /* Space above time */
+  font-size: 16px; /* Font size for time */
+}
+
+.bell-container{
+  
+}

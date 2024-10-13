@@ -1,0 +1,20 @@
+<div class="bus-list">
+  <div class="bus-item" *ngFor="let bus of buses">
+    <div class="bus-header">
+      <div class="bus-icon">
+        <i class="fas fa-bus"></i>
+        <!-- Font Awesome Bus Icon -->
+      </div>
+      <div class="bus-details">
+        <h3 class="bus-title">{{ bus.name }}</h3>
+        <p class="bus-description">{{ bus.description }}</p>
+      </div>
+      <!-- <div class="bell-container">
+        <button class="bell-button"><i class="fas fa-bell"></i></button>
+      </div> -->
+    </div>
+    <div class="bus-content">
+      <p>Time: {{ bus.time }}</p>
+    </div>
+  </div>
+</div>
