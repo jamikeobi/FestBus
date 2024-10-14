@@ -1,12 +1,11 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css']
+  selector: 'app-modal-search',
+  templateUrl: './modal-search.component.html',
+  styleUrls: ['./modal-search.component.css']
 })
-export class SearchComponent implements OnInit {
+export class ModalSearchComponent {
   fromQuery: string = ''; 
   toQuery: string = ''; 
   searchResults: Array<{ start: string; end: string; expectedArrival: string; expectedDropOff: string; duration: string; }> = [];
@@ -15,16 +14,9 @@ export class SearchComponent implements OnInit {
   @ViewChild('fromInput') fromInput!: ElementRef;
   @ViewChild('toInput') toInput!: ElementRef;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor() {}
 
-  ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.fromQuery = params['query'];
-
-      if(this.fromInput){
-        this.fromInput.nativeElement.value = this.fromQuery;
-      }
-    })
+  ngOnInit(): void {
     this.loadRecentSearches();
   }
 

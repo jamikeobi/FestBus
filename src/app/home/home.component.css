@@ -105,6 +105,11 @@ body {
   margin-bottom: 20px;
 }
 
+/* .search-section input{
+  width: 100px;
+  margin-top: -50px;
+} */
+
 .location-input {
   flex-grow: 1;
   padding: 12px 15px;

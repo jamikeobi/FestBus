@@ -120,6 +120,23 @@ body {
   margin-top: 15px;
 }
 
+/* Toggle button styles */
+.toggle-sidebar-btn {
+  margin-left: 10px;
+  background-color: green;
+  border: none;
+  border-radius: 5px;
+  color: black;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.toggle-sidebar-btn:hover {
+  background-color: #e67e22;
+  transform: scale(1.05);
+}
+
 .clear-history-btn {
   padding: 8px 15px;
   background-color: #f39c12;
@@ -245,15 +262,25 @@ body {
   background-color: #e67e22;
   transform: scale(1.05);
 }
-
-/* Media queries for responsiveness */
+/* General responsiveness across all sizes */
 @media only screen and (max-width: 1024px) {
-  .container {
-    padding: 15px;
+  .search-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .search-bar input {
     font-size: 16px;
+    padding: 8px;
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .cancel-button {
+    padding: 13px;
+    font-size: 12px;
   }
 
   .section-header {
@@ -268,15 +295,31 @@ body {
     width: 70%;
     max-width: 350px;
   }
+
+  .toggle-sidebar-btn {
+    font-size: 14px;
+    padding: 8px;
+  }
 }
 
 @media only screen and (max-width: 768px) {
   .search-bar {
-    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .search-bar input {
+    font-size: 14px;
+    padding: 7px;
+    flex: 1;
+    margin-right: 10px;
   }
 
   .cancel-button {
-    font-size: 14px;
+    padding: 12px;
+    font-size: 9px;
   }
 
   .section-header {
@@ -288,62 +331,77 @@ body {
   }
 
   .sidebar {
-    width: 60%;
-    max-width: 300px;
+    width: 65%;
+    max-width: 320px;
+  }
+
+  .toggle-sidebar-btn {
+    font-size: 12px;
+    padding: 7px;
   }
 }
 
 @media only screen and (max-width: 480px) {
   .search-bar {
-    padding: 8px;
-    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .search-bar input {
-    font-size: 14px;
-  }
-
-  .cancel-button {
     font-size: 12px;
-  }
-
-  .button-browse {
-    padding: 12px;
-  }
-
-  .route-item {
-    padding: 10px;
-  }
-
-  .route-item .details strong {
-    font-size: 12px;
-  }
-
-  .sidebar {
-    width: 90%;
-    max-width: 250px;
-  }
-}
-
-@media only screen and (max-width: 320px) {
-  .search-bar {
     padding: 6px;
-  }
-
-  .search-bar input {
-    font-size: 12px;
+    flex: 1;
+    margin-right: 10px;
   }
 
   .cancel-button {
-    font-size: 10px;
+    padding: 11px;
+    font-size: 8px;
   }
 
   .section-header {
     font-size: 14px;
   }
 
-  .route-item {
-    padding: 8px;
+  .route-item .details strong {
+    font-size: 12px;
+  }
+
+  .sidebar {
+    width: 85%;
+    max-width: 280px;
+  }
+
+  .toggle-sidebar-btn {
+    font-size: 10px;
+    padding: 6px;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .search-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .search-bar input {
+    font-size: 10px;
+    padding: 5px;
+    flex: 1;
+    margin-right: 5px;
+  }
+
+  .cancel-button {
+    padding: 10px;
+    font-size: 7px;
+  }
+
+  .section-header {
+    font-size: 12px;
   }
 
   .route-item .details strong {
@@ -351,7 +409,12 @@ body {
   }
 
   .sidebar {
-    width: 85%;
-    max-width: 220px;
+    width: 90%;
+    max-width: 240px;
+  }
+
+  .toggle-sidebar-btn {
+    font-size: 8px;
+    padding: 5px;
   }
 }

@@ -3,7 +3,7 @@
   <div class="search-header wow fadeIn" data-wow-delay="0.1s">
     <div class="search-bar">
       <i class="fa fa-search" (click)="onSearch()"></i>
-      <input type="text" placeholder="From" id="fromInput" #fromInput />
+      <input type="text" placeholder="From" id="fromInput" #fromInput [(ngModel)]="fromQuery"/>
       <input type="text" placeholder="To" id="toInput" #toInput />
     </div>
     <div class="cancel-button" (click)="clearInput()">Cancel</div>
@@ -47,5 +47,20 @@
   <!-- Search Results Section -->
   <div class="section-header wow fadeIn" data-wow-delay="0.7s" *ngIf="searchResults.length > 0">
     <p>Search Results</p>
+  </div>
+  <div class="recent-searches">
+    <ul class="routes-list">
+      <li class="route-item" *ngFor="let result of searchResults; let i = index">
+        <div class="details">
+          <strong>{{ result.start }} to {{ result.end }}</strong>
+          <p>Expected Arrival: {{ result.expectedArrival }}</p>
+          <p>Expected Drop-off: {{ result.expectedDropOff }}</p>
+          <p>Duration: {{ result.duration }}</p>
+        </div>
+        <!-- <button (click)="removeSearchQuery(i)" class="remove-btn">
+          <i class="fa fa-trash"></i>
+        </button> -->
+      </li>
+    </ul>
   </div>
 </div>

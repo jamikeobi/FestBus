@@ -103,8 +103,8 @@ private initMap(){
     this.searchQuery = InputElement.value;
 
     // I am now checking if the input contains 3 or more words
-    const words = this.searchQuery.trim().split(/\s+/);
-    if(words.length === 3){
+    const words = this.searchQuery.trim();
+    if(words.length >= 3){
       this.navigateToSearch();
     }
   }
