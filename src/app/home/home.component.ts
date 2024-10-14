@@ -25,6 +25,7 @@ export class HomeComponent implements OnInit{
 ];
   constructor(private mapService: MapsearchService, private router: Router) {}
 
+  // Initialize the map
   ngOnInit() {
     this.initMap();
     this.getCurrentLocation();
@@ -32,7 +33,7 @@ export class HomeComponent implements OnInit{
   
 
   //Initialize the map
-  // Satelite map
+  // Satellite map
 //   private initMap(){
 //     this.map = L.map('map', {
 //         center: [51.505, -0.09],
