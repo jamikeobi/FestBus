@@ -17,11 +17,11 @@ export class HomeComponent implements OnInit{
 
 
  nearbyBusStops = [
-  { name: 'Bus Stop 1', availableBuses: 3 },
-  { name: 'Bus Stop 2', availableBuses: 5 },
-  { name: 'Bus Stop 3', availableBuses: 2 },
-  { name: 'Bus Stop 4', availableBuses: 4 },
-  { name: 'Bus Stop 5', availableBuses: 1 }
+  { name: '2nd Avenue, AA Close', availableBuses: 3 },
+  { name: '3rd Avenue, D Close', availableBuses: 5 },
+  { name: '5th Avenue, C Close', availableBuses: 2 },
+  { name: '7th Anenue, AA Close, 202 Road', availableBuses: 4 },
+  { name: '4th Avenue, A Close', availableBuses: 1 }
 ];
   constructor(private mapService: MapsearchService, private router: Router) {}
 

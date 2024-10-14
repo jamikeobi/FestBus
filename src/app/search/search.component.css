@@ -262,6 +262,59 @@ body {
   background-color: #e67e22;
   transform: scale(1.05);
 }
+
+
+/* Suggestions container */
+.suggestions {
+  position: relative; /* Position relative to the input field */
+  margin-top: 5px; /* Space between the input and suggestions */
+  width: 100%; /* Full width to match input */
+  max-height: 300px; /* Limit height */
+  overflow-y: auto; /* Scroll if content exceeds max height */
+  background-color: #fff; /* White background */
+  border: 1px solid #ccc; /* Light grey border */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  z-index: 1000; /* Ensure it appears above other elements */
+}
+
+/* Styles for the suggestion list */
+.suggestions ul {
+  list-style: none; /* Remove bullet points */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+
+/* Individual suggestion items */
+.suggestions li {
+  padding: 10px 15px; /* Add padding for clickable area */
+  cursor: pointer; /* Change cursor to pointer */
+  transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+/* Hover effect for suggestions */
+.suggestions li:hover {
+  background-color: #f0f0f0; /* Light grey background on hover */
+}
+
+/* Active state for suggestions */
+.suggestions li:active {
+  background-color: #e0e0e0; /* Darker grey when clicked */
+}
+
+/* Icon styling (optional) */
+.suggestions li::before {
+  content: "📍"; /* Example icon */
+  margin-right: 10px; /* Space between icon and text */
+  font-size: 16px; /* Adjust icon size */
+}
+
+/* No suggestions state */
+.no-suggestions {
+  padding: 10px;
+  text-align: center;
+  color: #999; /* Grey text color */
+}
 /* General responsiveness across all sizes */
 @media only screen and (max-width: 1024px) {
   .search-bar {

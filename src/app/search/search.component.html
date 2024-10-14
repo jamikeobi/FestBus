@@ -3,15 +3,36 @@
   <div class="search-header wow fadeIn" data-wow-delay="0.1s">
     <div class="search-bar">
       <i class="fa fa-search" (click)="onSearch()"></i>
-      <input type="text" placeholder="From" id="fromInput" #fromInput [(ngModel)]="fromQuery"/>
-      <input type="text" placeholder="To" id="toInput" #toInput />
+      <!-- From Input field -->
+      <input type="text" placeholder="From" id="fromInput" #fromInput [(ngModel)]="fromQuery" (input)="OnFromInputChange()"/>
+      
+
+       <!-- To Input field -->
+       <input type="text" placeholder="To" id="toInput" #toInput [(ngModel)]="toQuery" (input)="OnToInputChange()"/>
+       
     </div>
     <div class="cancel-button" (click)="clearInput()">Cancel</div>
     <button class="toggle-sidebar-btn" (click)="toggleSidebar()" *ngIf="searchResults.length > 0" id="toggleSidebarBtn">
       {{ isSidebarOpen ? 'Hide History' : 'Show History' }}
     </button>
   </div>
+  <!-- Suggestions for the form Input -->
+  <div class="suggestions" *ngIf="locationSuggestionsFrom.length > 0">
+    <ul>
+      <li *ngFor="let location of locationSuggestionsFrom" (click)="fromQuery = location.name; fromInput.value = location.name; locationSuggestionsFrom = []">
+        {{location.name}}
+      </li>
+    </ul>
+   </div>
 
+   <!-- Suggestions for the TO Input -->
+   <div class="suggestions" *ngIf="locationSuggestionsTo.length > 0">
+    <ul>
+      <li *ngFor="let location of locationSuggestionsTo" (click)="toQuery = location.name; toInput.value = location.name; locationSuggestionsTo = []">
+        {{location.name}}            
+      </li>
+    </ul>
+   </div>
   <!-- Backdrop for overlay effect -->
   <div class="backdrop" [class.active]="isSidebarOpen" (click)="toggleSidebar()"></div>
 

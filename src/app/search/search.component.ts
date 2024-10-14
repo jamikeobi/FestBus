@@ -1,5 +1,6 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SearchLocationService } from '../Services/Map_Service/SearchLocationService/search-location.service';
 
 @Component({
   selector: 'app-search',
@@ -10,22 +11,33 @@ export class SearchComponent implements OnInit {
   fromQuery: string = ''; 
   toQuery: string = ''; 
   searchResults: Array<{ start: string; end: string; expectedArrival: string; expectedDropOff: string; duration: string; }> = [];
-  isSidebarOpen: boolean = false; // To manage sidebar state
+  locationSuggestionsFrom: Array<{ name: string; type: string; }> = []; 
+  locationSuggestionsTo: Array<{ name: string; type: string; }> = []; 
+  isSidebarOpen: boolean = false; 
+  
 
-  @ViewChild('fromInput') fromInput!: ElementRef;
-  @ViewChild('toInput') toInput!: ElementRef;
+  @ViewChild('fromInput', { static: false }) fromInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('toInput', { static: false }) toInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private searchLocationService: SearchLocationService) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.fromQuery = params['query'];
 
-      if(this.fromInput){
+      if (this.fromInput) {
         this.fromInput.nativeElement.value = this.fromQuery;
       }
-    })
+    });
     this.loadRecentSearches();
+  }
+
+  OnFromInputChange() {
+    this.locationSuggestionsFrom = this.searchLocationService.searchLocations(this.fromInput.nativeElement.value);
+  }
+
+  OnToInputChange() {
+    this.locationSuggestionsTo = this.searchLocationService.searchLocations(this.toInput.nativeElement.value);
   }
 
   onSearch() {
@@ -76,8 +88,8 @@ export class SearchComponent implements OnInit {
   clearInput() {
     this.fromQuery = '';
     this.toQuery = '';
-    this.fromInput.nativeElement.value = '';
-    this.toInput.nativeElement.value = '';
+    if (this.fromInput) this.fromInput.nativeElement.value = '';
+    if (this.toInput) this.toInput.nativeElement.value = '';
   }
 
   useCurrentLocation() {
@@ -85,7 +97,7 @@ export class SearchComponent implements OnInit {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
         this.fromQuery = `Current Location (${latitude}, ${longitude})`;
-        this.fromInput.nativeElement.value = this.fromQuery; // Set the input value
+        if (this.fromInput) this.fromInput.nativeElement.value = this.fromQuery;
       }, (error) => {
         console.error('Error getting location', error);
         alert('Unable to retrieve your location. Please try again.');
@@ -95,21 +107,14 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  // Method to toggle the sidebar visibility
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-   // Listen for clicks outside the sidebar
-  //  @HostListener('document:click', ['$event'])
-  //  handleClick(event: MouseEvent) {
-  //    const sidebar = document.getElementById('sidebar');
-  //    const toggleBtn = document.getElementById('toggleSidebarBtn');
- 
-  //    // Check if the clicked target is not the sidebar or the toggle button
-  //    if (sidebar && toggleBtn && !sidebar.contains(event.target as Node) && !toggleBtn.contains(event.target as Node)) {
-  //      this.isSidebarOpen = false;
-  //    }
-  //  }
- 
+  selectSuggestion(suggestion: { name: string; type: string }) {
+    this.fromQuery = suggestion.name; // Update input
+    this.toInput.nativeElement.focus(); // Optionally, focus on the next input
+    this.locationSuggestionsFrom = []; // Clear suggestions after selection
+  }
+  
 }
