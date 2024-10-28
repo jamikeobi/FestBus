@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BusListComponent implements OnInit {
   buses = [
-    { id: 1, name: 'Ivanhoe Crescent', description: '1 min walk towards Silverknowes', time: '18 min' }
+    { id: 1, name: '1st Avenue', description: '1 min walk towards Total Fueling Station', time: '18 min' }
     // { id: 2, name: 'Glenvarloch Crescent', description: '16 min walk towards Mayfield or Gorebridge', time: '16 min' },
     // { id: 3, name: 'Mayfield', description: 'Bus 3, towards central', time: '40 min' },
   ];

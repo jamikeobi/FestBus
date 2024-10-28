@@ -1,6 +1,7 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { SearchLocationService } from '../Services/Map_Service/SearchLocationService/search-location.service';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SearchLocationService } from '../Services/searchLocation/search-location.service';
+import { Route } from '../Models/route';
 
 @Component({
   selector: 'app-search',
@@ -8,133 +9,181 @@ import { SearchLocationService } from '../Services/Map_Service/SearchLocationSer
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
-    // Properties to hold input values and search results
-    fromQuery: string = ''; 
-    toQuery: string = ''; 
-    searchResults: Array<{ start: string; end: string; expectedArrival: string; expectedDropOff: string; duration: string; }> = [];
-    locationSuggestionsFrom: Array<{ name: string; type: string; }> = []; 
-    locationSuggestionsTo: Array<{ name: string; type: string; }> = []; 
-    isSidebarOpen: boolean = false; // Boolean to track sidebar state
+  routeModel!: Route[];
   
-    // ViewChild to reference the input elements in the template
-    @ViewChild('fromInput', { static: false }) fromInput!: ElementRef<HTMLInputElement>;
-    @ViewChild('toInput', { static: false }) toInput!: ElementRef<HTMLInputElement>;
-  
-    // Constructor to inject dependencies
-    constructor(private route: ActivatedRoute, private searchLocationService: SearchLocationService) {}
-  
-    // Lifecycle hook that runs after component initialization
-    ngOnInit() {
-      // Subscribe to the query parameters in the route
-      this.route.queryParams.subscribe(params => {
-        this.fromQuery = params['query']; // Get the 'query' parameter
-  
-        // Set the value of the 'from' input element if it exists
-        if (this.fromInput) {
-          this.fromInput.nativeElement.value = this.fromQuery;
-        }
-      });
-      this.loadRecentSearches(); // Load recent searches from localStorage
-    }
-  
-    // Method to handle changes in the 'from' input field
-    OnFromInputChange() {
-      // Update location suggestions based on the input value
-      this.locationSuggestionsFrom = this.searchLocationService.searchLocations(this.fromInput.nativeElement.value);
-    }
-  
-    // Method to handle changes in the 'to' input field
-    OnToInputChange() {
-      // Update location suggestions based on the input value
-      this.locationSuggestionsTo = this.searchLocationService.searchLocations(this.toInput.nativeElement.value);
-    }
-  
-    // Method to perform the search when the user clicks the search button
-    onSearch() {
-      // Trim whitespace from input values
-      this.fromQuery = this.fromInput.nativeElement.value.trim();
-      this.toQuery = this.toInput.nativeElement.value.trim();
-  
-      // Check if both input queries are valid
-      if (this.fromQuery.length > 1 && this.toQuery.length > 1) {
-        const now = new Date(); // Get the current date and time
-        const durationInMinutes = Math.floor(Math.random() * 60) + 15; // Random duration between 15-75 minutes
-        const expectedArrival = new Date(now.getTime() + durationInMinutes * 60000).toLocaleTimeString(); // Calculate expected arrival time
-        const expectedDropOff = new Date(now.getTime() + (durationInMinutes + 5) * 60000).toLocaleTimeString(); // Calculate expected drop-off time
-  
-        // Create a result object with search details
-        const result = {
-          start: this.fromQuery,
-          end: this.toQuery,
-          expectedArrival: expectedArrival,
-          expectedDropOff: expectedDropOff,
-          duration: `${durationInMinutes} minutes` // Duration as a string
-        };
-  
-        this.saveSearchQuery(result); // Save the search query to localStorage
-        this.loadRecentSearches(); // Reload recent searches
+  // Properties to store the 'from' and 'to' query inputs
+  fromQuery: string = ''; 
+  toQuery: string = ''; 
+
+  // Array to hold search results (including start, end, duration, etc.)
+  searchResults: Array<{ start: string; end: string; expectedArrival: string; expectedDropOff: string; duration: string; }> = [];
+
+  // Suggestions for 'from' and 'to' location inputs
+  locationSuggestionsFrom: Array<{ name: string; type: string; }> = []; 
+  locationSuggestionsTo: Array<{ name: string; type: string; }> = []; 
+
+  // Tracks whether the sidebar is open or closed
+  isSidebarOpen: boolean = false; 
+
+  // ViewChild to capture the input elements for 'from' and 'to' locations
+  @ViewChild('fromInput', { static: false }) fromInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('toInput', { static: false }) toInput!: ElementRef<HTMLInputElement>;
+
+  // Constructor to inject the necessary services (Router and ActivatedRoute)
+  constructor(private route: ActivatedRoute, private router: Router) {}
+
+  // Inject the search location service manually
+  searchLocationService: SearchLocationService = inject(SearchLocationService);
+
+  ngOnInit() {
+    // Listen for query parameters (e.g., when coming back to the search page with pre-filled queries)
+    this.route.queryParams.subscribe(params => {
+      // Capture the 'from' query from URL
+      this.fromQuery = params['query']; 
+
+      console.log(this.fromQuery); // Debugging: log the 'from' query value
+
+      // Set the 'from' input field with the captured query value if the input exists
+      if (this.fromInput) {
+        this.fromInput.nativeElement.value = this.fromQuery;
       }
-    }
+    });
+
+    // Load recent searches from localStorage when the component initializes
+    this.loadRecentSearches();
+  }
+
+  // Updates the 'from' input and provides location suggestions
+  OnFromInputChange() {
+    // Call the search service to get location suggestions
+    this.locationSuggestionsFrom = this.searchLocationService.searchLocations(this.fromInput.nativeElement.value);
+  }
+
+  // Updates the 'to' input and provides location suggestions
+  OnToInputChange() {
+    // Call the search service to get location suggestions
+    this.locationSuggestionsTo = this.searchLocationService.searchLocations(this.toInput.nativeElement.value);
+  }
+
+  // Triggered when the user clicks the search button
+  onSearch() {
+    // Trim input values from the 'from' and 'to' fields
+    const fromQuery = this.fromInput.nativeElement.value.trim();
+    const toQuery = this.toInput.nativeElement.value.trim();
   
-    // Method to save the search query to localStorage
-    saveSearchQuery(result: { start: string; end: string; expectedArrival: string; expectedDropOff: string; duration: string; }): void {
-      let searches = JSON.parse(localStorage.getItem('searchResults') || '[]'); // Retrieve existing searches
-      searches.push(result); // Add the new search result
-      localStorage.setItem('searchResults', JSON.stringify(searches)); // Save updated searches to localStorage
-    }
+    // Ensure the inputs have valid values before proceeding
+    if (fromQuery.length > 1 && toQuery.length > 1) {
+      console.log('Navigating with queries:', fromQuery, toQuery); // Debugging: log the input queries
   
-    // Method to load recent searches from localStorage
-    loadRecentSearches(): void {
-      this.searchResults = JSON.parse(localStorage.getItem('searchResults') || '[]'); // Load searches
-    }
+      // Navigate to the '/route' path with query parameters 'query1' and 'query2'
+      this.router.navigate(['/route'], { queryParams: { query1: fromQuery, query2: toQuery }});
   
-    // Method to clear the search history
-    clearSearchHistory(): void {
-      localStorage.removeItem('searchResults'); // Remove searches from localStorage
-      this.searchResults = []; // Clear the local array
-    }
+      // Generate current date and time
+      const now = new Date(); 
   
-    // Method to remove a specific search query based on index
-    removeSearchQuery(index: number) {
-      let searches = JSON.parse(localStorage.getItem('searchResults') || '[]'); // Load existing searches
-      searches.splice(index, 1); // Remove the search at the specified index
-      localStorage.setItem('searchResults', JSON.stringify(searches)); // Save updated searches to localStorage
-      this.loadRecentSearches(); // Reload recent searches
-    }
+      // Randomly calculate duration between 15-75 minutes
+      const durationInMinutes = Math.floor(Math.random() * 60) + 15; 
   
-    // Method to clear both input fields
-    clearInput() {
-      this.fromQuery = ''; // Clear the fromQuery
-      this.toQuery = ''; // Clear the toQuery
-      if (this.fromInput) this.fromInput.nativeElement.value = ''; // Clear the input field for 'from'
-      if (this.toInput) this.toInput.nativeElement.value = ''; // Clear the input field for 'to'
-    }
+      // Calculate expected arrival and drop-off times
+      const expectedArrival = new Date(now.getTime() + durationInMinutes * 60000).toLocaleTimeString();
+      const expectedDropOff = new Date(now.getTime() + (durationInMinutes + 5) * 60000).toLocaleTimeString();
   
-    // Method to use the current geolocation as the starting point
-    useCurrentLocation() {
-      if (navigator.geolocation) { // Check if geolocation is supported
-        navigator.geolocation.getCurrentPosition((position) => {
-          const { latitude, longitude } = position.coords; // Get latitude and longitude
-          this.fromQuery = `Current Location (${latitude}, ${longitude})`; // Update fromQuery with current location
-          if (this.fromInput) this.fromInput.nativeElement.value = this.fromQuery; // Set input value
-        }, (error) => {
-          console.error('Error getting location', error); // Log error if geolocation fails
-          alert('Unable to retrieve your location. Please try again.'); // Alert user
-        });
+      // Create a result object to hold the search details
+      const result = {
+        start: fromQuery,
+        end: toQuery,
+        expectedArrival: expectedArrival,
+        expectedDropOff: expectedDropOff,
+        duration: `${durationInMinutes} minutes`
+      };
+  
+      // Save the search query in localStorage
+      this.saveSearchQuery(result);
+  
+      // Load the recent searches
+      this.loadRecentSearches();
+  
+      // Get route details and store it
+      const routeDetails = this.searchLocationService.getRouteDetails(fromQuery, toQuery);
+      if (routeDetails) {
+        // Store the route details in a suitable place, e.g., localStorage or a service
+        this.storeRouteDetails(routeDetails);
       } else {
-        alert('Geolocation is not supported by this browser.'); // Alert if geolocation is unsupported
+        console.error("Route details not found for the specified locations.");
       }
+    } else {
+      // Handle the case when inputs are invalid
+      console.error("Invalid input: both 'from' and 'to' locations must have more than one character.");
     }
+  }
   
-    // Method to toggle the sidebar open/close
-    toggleSidebar() {
-      this.isSidebarOpen = !this.isSidebarOpen; // Toggle sidebar state
-    }
+  // Method to store route details (implement as needed)
+  storeRouteDetails(route: Route) {
+    // For example, store in localStorage
+    localStorage.setItem('routeDetails', JSON.stringify(route));
+  }
   
-    // Method to select a location suggestion
-    selectSuggestion(suggestion: { name: string; type: string }) {
-      this.fromQuery = suggestion.name; // Update input with selected suggestion
-      this.toInput.nativeElement.focus(); // Focus on the next input field ('to')
-      this.locationSuggestionsFrom = []; // Clear suggestions after selection
+
+  // Save search query result to localStorage
+  saveSearchQuery(result: { start: string; end: string; expectedArrival: string; expectedDropOff: string; duration: string; }): void {
+    let searches = JSON.parse(localStorage.getItem('searchResults') || '[]'); // Retrieve existing searches
+    searches.push(result); // Add the new search result
+    localStorage.setItem('searchResults', JSON.stringify(searches)); // Save updated searches back to localStorage
+  }
+
+  // Load recent searches from localStorage
+  loadRecentSearches(): void {
+    this.searchResults = JSON.parse(localStorage.getItem('searchResults') || '[]'); // Load and parse the stored searches
+  }
+
+  // Clears the search history from localStorage and resets the results
+  clearSearchHistory(): void {
+    localStorage.removeItem('searchResults'); // Remove the searches from localStorage
+    this.searchResults = []; // Clear the array holding the search results
+  }
+
+  // Remove a specific search query based on index
+  removeSearchQuery(index: number) {
+    let searches = JSON.parse(localStorage.getItem('searchResults') || '[]'); // Retrieve searches
+    searches.splice(index, 1); // Remove the selected search by index
+    localStorage.setItem('searchResults', JSON.stringify(searches)); // Save the updated search list back to localStorage
+    this.loadRecentSearches(); // Reload the updated list
+  }
+
+  // Clear both input fields ('from' and 'to')
+  clearInput() {
+    this.fromQuery = ''; // Reset 'from' query
+    this.toQuery = ''; // Reset 'to' query
+    if (this.fromInput) this.fromInput.nativeElement.value = ''; // Clear the 'from' input field
+    if (this.toInput) this.toInput.nativeElement.value = ''; // Clear the 'to' input field
+  }
+
+  // Use geolocation to set the 'from' query to the user's current location
+  useCurrentLocation() {
+    if (navigator.geolocation) { // Check if geolocation is supported
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords; // Get latitude and longitude from the geolocation API
+        this.fromQuery = `Current Location (${latitude}, ${longitude})`; // Set 'from' query with current location coordinates
+        if (this.fromInput) this.fromInput.nativeElement.value = this.fromQuery; // Set input value
+      }, (error) => {
+        // Handle errors if geolocation fails
+        console.error('Error getting location', error);
+        alert('Unable to retrieve your location. Please try again.');
+      });
+    } else {
+      alert('Geolocation is not supported by this browser.'); // If geolocation is not supported
     }
+  }
+
+  // Toggle the sidebar state (open/close)
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen; // Toggle the boolean flag
+  }
+
+  // Select a location suggestion and move to the 'to' input
+  selectSuggestion(suggestion: { name: string; type: string }) {
+    this.fromQuery = suggestion.name; // Set the 'from' query with the selected suggestion
+    this.toInput.nativeElement.focus(); // Focus on the 'to' input field
+    this.locationSuggestionsFrom = []; // Clear location suggestions after selection
+  }
 }

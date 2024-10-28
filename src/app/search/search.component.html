@@ -4,47 +4,92 @@
     <div class="search-bar">
       <i class="fa fa-search" (click)="onSearch()"></i>
       <!-- From Input field -->
-      <input type="text" placeholder="From" id="fromInput" #fromInput [(ngModel)]="fromQuery" (input)="OnFromInputChange()"/>
-      
+      <input
+        type="text"
+        placeholder="From"
+        id="fromInput"
+        #fromInput
+        [(ngModel)]="fromQuery"
+        (input)="OnFromInputChange()"
+      />
 
-       <!-- To Input field -->
-       <input type="text" placeholder="To" id="toInput" #toInput [(ngModel)]="toQuery" (input)="OnToInputChange()"/>
-       
+      <!-- To Input field -->
+      <input
+        type="text"
+        placeholder="To"
+        id="toInput"
+        #toInput
+        [(ngModel)]="toQuery"
+        (input)="OnToInputChange()"
+      />
     </div>
     <div class="cancel-button" (click)="clearInput()">Cancel</div>
-    <button class="toggle-sidebar-btn" (click)="toggleSidebar()" *ngIf="searchResults.length > 0" id="toggleSidebarBtn">
-      {{ isSidebarOpen ? 'Hide History' : 'Show History' }}
+    <button
+      class="toggle-sidebar-btn"
+      (click)="toggleSidebar()"
+      *ngIf="searchResults.length > 0"
+      id="toggleSidebarBtn"
+    >
+      {{ isSidebarOpen ? "Hide History" : "Show History" }}
     </button>
   </div>
   <!-- Suggestions for the form Input -->
   <div class="suggestions" *ngIf="locationSuggestionsFrom.length > 0">
     <ul>
-      <li *ngFor="let location of locationSuggestionsFrom" (click)="fromQuery = location.name; fromInput.value = location.name; locationSuggestionsFrom = []">
-        {{location.name}}
+      <li
+        *ngFor="let location of locationSuggestionsFrom"
+        (click)="
+          fromQuery = location.name;
+          fromInput.value = location.name;
+          locationSuggestionsFrom = []
+        "
+      >
+        {{ location.name }}
       </li>
     </ul>
-   </div>
+  </div>
 
-   <!-- Suggestions for the TO Input -->
-   <div class="suggestions" *ngIf="locationSuggestionsTo.length > 0">
+  <!-- Suggestions for the TO Input -->
+  <div class="suggestions" *ngIf="locationSuggestionsTo.length > 0">
     <ul>
-      <li *ngFor="let location of locationSuggestionsTo" (click)="toQuery = location.name; toInput.value = location.name; locationSuggestionsTo = []">
-        {{location.name}}            
+      <li
+        *ngFor="let location of locationSuggestionsTo"
+        (click)="
+          toQuery = location.name;
+          toInput.value = location.name;
+          locationSuggestionsTo = []
+        "
+      >
+        {{ location.name }}
       </li>
     </ul>
-   </div>
+  </div>
   <!-- Backdrop for overlay effect -->
-  <div class="backdrop" [class.active]="isSidebarOpen" (click)="toggleSidebar()"></div>
+  <div
+    class="backdrop"
+    [class.active]="isSidebarOpen"
+    (click)="toggleSidebar()"
+  ></div>
 
   <!-- Sidebar for Search History -->
-  <div class="sidebar wow fadeIn" data-wow-delay="0.3s" [class.open]="isSidebarOpen" id="sidebar">
+  <div
+    class="sidebar wow fadeIn"
+    data-wow-delay="0.3s"
+    [class.open]="isSidebarOpen"
+    id="sidebar"
+  >
     <div class="section-header" *ngIf="searchResults.length > 0">
       <p>Search History</p>
-      <button class="clear-history-btn" (click)="clearSearchHistory()">Clear History</button>
+      <button class="clear-history-btn" (click)="clearSearchHistory()">
+        Clear History
+      </button>
     </div>
     <div class="recent-searches">
       <ul class="routes-list">
-        <li class="route-item" *ngFor="let result of searchResults; let i = index">
+        <li
+          class="route-item"
+          *ngFor="let result of searchResults; let i = index"
+        >
           <div class="details">
             <strong>{{ result.start }} to {{ result.end }}</strong>
             <p>Expected Arrival: {{ result.expectedArrival }}</p>
@@ -65,23 +110,33 @@
     <a href="/route">Browse all routes</a>
   </div>
 
-  <!-- Search Results Section -->
-  <div class="section-header wow fadeIn" data-wow-delay="0.7s" *ngIf="searchResults.length > 0">
-    <p>Search Results</p>
-  </div>
-  <div class="recent-searches">
+  <!-- Recent Searches Section -->
+  <div class="section-header wow fadeIn">
+    <h3>Recent Searches</h3>
     <ul class="routes-list">
-      <li class="route-item" *ngFor="let result of searchResults; let i = index">
-        <div class="details">
-          <strong>{{ result.start }} to {{ result.end }}</strong>
-          <p>Expected Arrival: {{ result.expectedArrival }}</p>
-          <p>Expected Drop-off: {{ result.expectedDropOff }}</p>
-          <p>Duration: {{ result.duration }}</p>
-        </div>
-        <!-- <button (click)="removeSearchQuery(i)" class="remove-btn">
-          <i class="fa fa-trash"></i>
-        </button> -->
-      </li>
+      <!-- Display search results -->
+        <li
+          *ngFor="let result of searchResults; let i = index"
+          class="route-item"
+        >
+          <div class="time-details">
+            <div class="time-info">
+              <p class="start-time">{{ result.start }}</p>
+              <p class="start-time">{{ result.end }}</p>
+              <p class="duration">Takes {{ result.duration }}</p>
+            </div>
+            <div class="leave-time">
+              <!-- <p class="end-time">{{ result.end }}</p> -->
+              <p class="leave-info">
+                Arrives: {{ result.expectedArrival }} <i class="fa-solid fa-minus"></i> Drop-off:
+                {{ result.expectedDropOff }}
+              </p>
+            </div>
+          </div>
+          <div class="bus-details">
+            <a href="/route"><i class="fa fa-chevron-right"></i></a>
+          </div>
+        </li>
     </ul>
   </div>
 </div>

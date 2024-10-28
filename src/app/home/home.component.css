@@ -214,6 +214,46 @@ body {
   font-size: 1em;
 }
 
+/* Report and Contact Button CSS */
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #3e0d0d; /* Background color similar to the section in your image */
+}
+
+.report-button,
+.contact-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+}
+
+.report-button {
+  background-color: #c2a663; /* Gold background */
+  color: white;
+}
+
+.contact-button {
+  background-color: #b0b0b0; /* Grey background */
+  color: white;
+}
+
+.report-button i,
+.contact-button i {
+  margin-right: 8px;
+}
+
+.contact-button i {
+  margin-right: 12px;
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .app-container {

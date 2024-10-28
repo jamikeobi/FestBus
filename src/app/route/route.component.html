@@ -1,1 +1,36 @@
-<p>route works!</p>
+<div class="container">
+
+  <!-- Route Details Section -->
+  <div class="route-details" *ngIf="selectedRoute">
+    <!-- Section 1: Map Display -->
+    <div class="route-map">
+      <h2>Route Map</h2>
+      <div id="map"></div>
+    </div>
+
+    <!-- Section 2: Duration -->
+    <div class="route-duration">
+      <h2>Duration</h2>
+      <p>{{ minutesToTravelToDestination }} minutes</p>
+    </div>
+    <p>From: {{ fromQuery }}</p>
+    <p>To: {{ toQuery }}</p>
+    
+  </div>
+
+   <!-- Section 3: Stops Breakdown -->
+   <div *ngIf="stopsAlongTheWay.length > 0" class="route-stops" style="overflow: scroll;">
+    <h2>Stops Along the Way</h2>
+    <ul>
+      <li *ngFor="let stop of stopsAlongTheWay">
+        <strong>{{ stop.name || 'Unnamed Stop' }}</strong><br>
+        <!-- Latitude: {{ stop.lat }}<br> -->
+        <!-- Longitude: {{ stop.lng }} -->
+      </li>
+    </ul>
+  </div>
+  
+  <div *ngIf="stopsAlongTheWay.length === 0">
+    <p>No stops found along the way.</p>
+  </div>
+</div>

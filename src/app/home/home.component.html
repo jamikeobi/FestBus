@@ -2,32 +2,55 @@
   <!-- Map Section -->
   <section class="map-section wow fadeIn" data-wow-delay="0.1s">
     <h2 class="logo">Festbus</h2>
-    <!-- <div id="map" class="map-container" style="height: 500px;"> -->
+    <div id="map" class="map-container" style="height: 500px">
       <!-- Map content will go here (e.g., Google Maps or Leaflet) -->
-    <!-- </div> -->
+    </div>
   </section>
 
   <!-- Search Section -->
   <section class="search-section wow fadeIn" data-wow-delay="0.3s">
-    <input type="text" class="location-input" placeholder="Where are you heading to..." #searchInput (input)="onSearch($event)">
+    <input
+      type="text"
+      class="location-input"
+      placeholder="Where are you heading to..."
+      #searchInput
+      (input)="onSearch($event)"
+    />
     <!-- <button class="search-button" (click)="onSearchClickButton()">Search</button> -->
   </section>
 
   <!-- Current Bus Stop Section -->
-  <section class="current-bus-stop-section wow fadeIn" data-wow-delay="0.5s" style="background-color: black;">
+  <section
+    class="current-bus-stop-section wow fadeIn"
+    data-wow-delay="0.5s"
+    style="background-color: black"
+  >
     <h2>Current Bus Stop</h2>
-    <p>Bus Stop Name: <span id="current-bus-stop">1st Avenue, D Close, 201 road</span></p>
+    <p>
+      Bus Stop Name:
+      <span id="current-bus-stop">1st Avenue, D Close, 201 road</span>
+    </p>
     <h3>Available Buse</h3>
     <app-bus-list></app-bus-list>
+  </section>
+
+  <!-- Report / Contact button Section -->
+  <section class="action-buttons-section wow fadeIn" data-wow-delay="0.7s">
+    <div class="action-buttons">
+      <button class="report-button"><i class="fa fa-ticket"></i> Report</button>
+      <button class="contact-button">
+        <i class="fa fa-home"></i> Contact Us
+      </button>
+    </div>
   </section>
 
   <!-- Nearby Bus Stops Section -->
   <section class="nearby-section wow fadeIn" data-wow-delay="0.7s">
     <h2>Nearby Bus Stops</h2>
-    <ul class="nearby-list">
-      <li class="nearby-item" *ngFor="let busStop of nearbyBusStops">
+    <ul class="nearby-list" *ngIf="locations$ | async as Locations">
+      <li class="nearby-item" *ngFor="let busStop of Locations | slice:0:5">
         <h4>{{ busStop.name }}</h4>
-        <p>Available Buses: {{ busStop.availableBuses }}</p>
+        <p>Available Buses: {{ busStop.buses }}</p>
       </li>
     </ul>
   </section>

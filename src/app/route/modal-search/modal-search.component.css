@@ -1,0 +1,474 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #1f1f1f;
+    color: #fff;
+    line-height: 1.5;
+  }
+  
+  .container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    transition: padding-right 0.3s ease; /* Smooth transition when sidebar opens */
+  }
+  
+  /* Adjustments for proper layout control */
+  .search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #333;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #444;
+    padding: 12px;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .search-bar:hover {
+    background-color: #555;
+    transform: translateY(-3px);
+  }
+  
+  .search-bar input {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    outline: none;
+    margin-left: 10px;
+    width: 100%;
+    font-size: 18px;
+    transition: width 0.3s ease;
+  }
+  
+  .search-bar input::placeholder {
+    color: #bbb;
+  }
+  
+  .search-bar i {
+    color: #bbb;
+    transition: color 0.3s ease;
+  }
+  
+  .search-bar:hover i {
+    color: #fff;
+  }
+  
+  .cancel-button {
+    color: #ffcf44;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .cancel-button:hover {
+    color: #ffd700;
+  }
+  
+  .section-header {
+    font-size: 20px;
+    padding: 20px 0;
+    color: #ffcf44;
+    border-bottom: 2px solid #444;
+    margin-top: 15px;
+    text-transform: uppercase;
+  }
+  
+  .button-browse {
+    padding: 15px;
+    background-color: #333;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .button-browse a {
+    color: #f39c12;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .button-browse:hover {
+    background-color: #444;
+  }
+  
+  .button-browse a:hover {
+    color: #ffcf44;
+  }
+  
+  .recent-searches {
+    margin-top: 15px;
+  }
+  
+  /* Toggle button styles */
+  .toggle-sidebar-btn {
+    margin-left: 10px;
+    background-color: green;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .toggle-sidebar-btn:hover {
+    background-color: #e67e22;
+    transform: scale(1.05);
+  }
+  
+  .clear-history-btn {
+    padding: 8px 15px;
+    background-color: #f39c12;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .clear-history-btn:hover {
+    background-color: #e67e22;
+    transform: scale(1.05);
+  }
+  
+  .routes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .route-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #2f2f2f;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .route-item:hover {
+    background-color: #3a3a3a;
+    transform: translateY(-3px);
+  }
+  
+  .route-item .details {
+    color: #bbb;
+  }
+  
+  .route-item .details strong {
+    color: #fff;
+    font-size: 18px;
+    padding-right: 10px;
+  }
+  
+  .route-item i {
+    color: #f39c12;
+    font-size: 16px;
+  }
+  
+  .remove-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .remove-btn i {
+    color: #e74c3c;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .remove-btn:hover i {
+    transform: scale(1.2);
+    color: #c0392b;
+  }
+  
+  /* Sidebar styles - Pop-up window */
+  .sidebar {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0); /* Hidden initially */
+    width: 80%;
+    max-width: 400px;
+    height: auto;
+    background-color: #333;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    padding: 15px;
+    z-index: 100;
+    opacity: 0;
+    border-radius: 10px;
+  }
+  
+  .sidebar.open {
+    transform: translate(-50%, -50%) scale(1); /* Pop-up to full size */
+    opacity: 1;
+  }
+  
+  /* Backdrop overlay */
+  .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    visibility: hidden;
+  }
+  
+  .backdrop.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Toggle button styles */
+  .toggle-sidebar-btn {
+    margin-left: 10px;
+    background-color: green;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .toggle-sidebar-btn:hover {
+    background-color: #e67e22;
+    transform: scale(1.05);
+  }
+  
+  
+  /* Suggestions container */
+  .suggestions {
+    position: relative; /* Position relative to the input field */
+    margin-top: 5px; /* Space between the input and suggestions */
+    width: 100%; /* Full width to match input */
+    max-height: 300px; /* Limit height */
+    overflow-y: auto; /* Scroll if content exceeds max height */
+    background-color: #fff; /* White background */
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    z-index: 1000; /* Ensure it appears above other elements */
+  }
+  
+  /* Styles for the suggestion list */
+  .suggestions ul {
+    list-style: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+  }
+  
+  /* Individual suggestion items */
+  .suggestions li {
+    padding: 10px 15px; /* Add padding for clickable area */
+    cursor: pointer; /* Change cursor to pointer */
+    transition: background-color 0.3s; /* Smooth background color transition */
+  }
+  
+  /* Hover effect for suggestions */
+  .suggestions li:hover {
+    background-color: #f0f0f0; /* Light grey background on hover */
+  }
+  
+  /* Active state for suggestions */
+  .suggestions li:active {
+    background-color: #e0e0e0; /* Darker grey when clicked */
+  }
+  
+  /* Icon styling (optional) */
+  .suggestions li::before {
+    content: "📍"; /* Example icon */
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 16px; /* Adjust icon size */
+  }
+  
+  /* No suggestions state */
+  .no-suggestions {
+    padding: 10px;
+    text-align: center;
+    color: #999; /* Grey text color */
+  }
+  /* General responsiveness across all sizes */
+  @media only screen and (max-width: 1024px) {
+    .search-bar {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .search-bar input {
+      font-size: 16px;
+      padding: 8px;
+      flex: 1;
+      margin-right: 10px;
+    }
+  
+    .cancel-button {
+      padding: 13px;
+      font-size: 12px;
+    }
+  
+    .section-header {
+      font-size: 18px;
+    }
+  
+    .route-item .details strong {
+      font-size: 16px;
+    }
+  
+    .sidebar {
+      width: 70%;
+      max-width: 350px;
+    }
+  
+    .toggle-sidebar-btn {
+      font-size: 14px;
+      padding: 8px;
+    }
+  }
+  
+  @media only screen and (max-width: 768px) {
+    .search-bar {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .search-bar input {
+      font-size: 14px;
+      padding: 7px;
+      flex: 1;
+      margin-right: 10px;
+    }
+  
+    .cancel-button {
+      padding: 12px;
+      font-size: 9px;
+    }
+  
+    .section-header {
+      font-size: 16px;
+    }
+  
+    .route-item .details strong {
+      font-size: 14px;
+    }
+  
+    .sidebar {
+      width: 65%;
+      max-width: 320px;
+    }
+  
+    .toggle-sidebar-btn {
+      font-size: 12px;
+      padding: 7px;
+    }
+  }
+  
+  @media only screen and (max-width: 480px) {
+    .search-bar {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .search-bar input {
+      font-size: 12px;
+      padding: 6px;
+      flex: 1;
+      margin-right: 10px;
+    }
+  
+    .cancel-button {
+      padding: 11px;
+      font-size: 8px;
+    }
+  
+    .section-header {
+      font-size: 14px;
+    }
+  
+    .route-item .details strong {
+      font-size: 12px;
+    }
+  
+    .sidebar {
+      width: 85%;
+      max-width: 280px;
+    }
+  
+    .toggle-sidebar-btn {
+      font-size: 10px;
+      padding: 6px;
+    }
+  }
+  
+  @media only screen and (max-width: 320px) {
+    .search-bar {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .search-bar input {
+      font-size: 10px;
+      padding: 5px;
+      flex: 1;
+      margin-right: 5px;
+    }
+  
+    .cancel-button {
+      padding: 10px;
+      font-size: 7px;
+    }
+  
+    .section-header {
+      font-size: 12px;
+    }
+  
+    .route-item .details strong {
+      font-size: 10px;
+    }
+  
+    .sidebar {
+      width: 90%;
+      max-width: 240px;
+    }
+  
+    .toggle-sidebar-btn {
+      font-size: 8px;
+      padding: 5px;
+    }
+  }
+  

@@ -1,90 +1,41 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
-import { MapsearchService } from '../Services/Map_Service/mapsearch.service';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { MapsearchService } from '../Services/mapService/mapsearch.service';
+import { SearchLocationService } from '../Services/searchLocation/search-location.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit{
- private map: any;
+export class HomeComponent implements OnInit {
+  private map: any;
+ locations$!: Observable<any[]>
  
  @ViewChild('searchInput') searchInput!: ElementRef;
 
  searchQuery: string = '';
 
 
- nearbyBusStops = [
-  { name: '2nd Avenue, AA Close', availableBuses: 3 },
-  { name: '3rd Avenue, D Close', availableBuses: 5 },
-  { name: '5th Avenue, C Close', availableBuses: 2 },
-  { name: '7th Anenue, AA Close, 202 Road', availableBuses: 4 },
-  { name: '4th Avenue, A Close', availableBuses: 1 }
-];
-  constructor(private mapService: MapsearchService, private router: Router) {}
+ 
+  constructor(private mapService: MapsearchService, private router: Router, private searchLocationService: SearchLocationService) {}
 
   // Initialize the map
   ngOnInit() {
-    this.initMap();
+    this.mapService.initMap();
     this.getCurrentLocation();
+    this.locations$ = this.searchLocationService.getLocations()
   }
   
 
-  //Initialize the map
-  // Satellite map
-//   private initMap(){
-//     this.map = L.map('map', {
-//         center: [51.505, -0.09],
-//         zoom: 13
-//     });
 
-//     // Adding a satellite tile layer
-//     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//         maxZoom: 19,
-//         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//     }).addTo(this.map);
-// }
-
-// Hybrid map
-private initMap(){
-  this.map = L.map('map', {
-      center: [51.505, -0.09],
-      zoom: 13
-  });
-
-  // Adding a hybrid tile layer
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 19,
-      attribution: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, NOAA'
-  }).addTo(this.map);
-}
 
 
    // Get the user's current location
    private getCurrentLocation(): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-         const defaultIcon = L.icon({
-          iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-          shadowSize: [41, 41]
-        });
-
-        // Setting marker at user's current location
-        const userLocation = L.marker([latitude, longitude], { icon: defaultIcon }).addTo(this.map);
-        userLocation.bindPopup('You are here!').openPopup();
-
-        this.map.setView([latitude, longitude], 13);
-      });
-    } else {
-      alert('Geolocation is not supported by your browser');
-    }
+    this.mapService.getCurrentLocation();
   }
 
 
