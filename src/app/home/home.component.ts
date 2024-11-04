@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { MapsearchService } from '../Services/mapService/mapsearch.service';
 import { SearchLocationService } from '../Services/searchLocation/search-location.service';
+import { Route } from '../Models/route';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,13 @@ import { SearchLocationService } from '../Services/searchLocation/search-locatio
 })
 export class HomeComponent implements OnInit {
   private map: any;
- locations$!: Observable<any[]>
+ locations$!: Observable<any[]>;
+ closestBusStop!: Route | null; // to closest bus stop
+  availableBus!: string | null; // this is to show available bus from the closest bus stop
+  loadingClosestBusStop: boolean = false;
+  isLoading: boolean = false;
+
+
  
  @ViewChild('searchInput') searchInput!: ElementRef;
 
@@ -35,8 +42,38 @@ export class HomeComponent implements OnInit {
 
    // Get the user's current location
    private getCurrentLocation(): void {
-    this.mapService.getCurrentLocation();
+    this.mapService.getCurrentLocation().then((location) => {
+      this.isLoading = true;
+      const { latitude, longitude } = location; // Extract latitude and longitude
+      this.getClosestBusStop(latitude, longitude); // Get closest bus stop after getting the user's location
+    }).catch(error => {
+      console.error('Error getting current location:', error);
+    });
   }
+  
+
+  // Get the closest bus stop to the user's location
+  private getClosestBusStop(lat: number, lon: number): void {
+    this.isLoading = true;
+    this.loadingClosestBusStop = true; // Set loading state to true
+    this.searchLocationService.getClosestBusStop(lat, lon).subscribe(
+      busStop => {
+        console.log('Closest bus stop:', busStop);
+        this.closestBusStop = busStop;
+        if (busStop) {
+          this.availableBus = busStop.buses[0];
+        }
+        this.loadingClosestBusStop = false; // Reset loading state after data is fetched
+      },
+      error => {
+        console.error('Error fetching closest bus stop:', error);
+        this.closestBusStop = null;
+        this.availableBus = null;
+        this.loadingClosestBusStop = false; // Reset loading state on error
+      }
+    );
+  }
+  
 
 
   //Search Location in the map

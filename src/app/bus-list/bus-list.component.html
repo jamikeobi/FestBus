@@ -1,20 +1,40 @@
-<div class="bus-list">
-  <div class="bus-item" *ngFor="let bus of buses">
-    <div class="bus-header">
-      <div class="bus-icon">
-        <i class="fas fa-bus"></i>
-        <!-- Font Awesome Bus Icon -->
-      </div>
-      <div class="bus-details">
-        <h3 class="bus-title">{{ bus.name }}</h3>
-        <p class="bus-description">{{ bus.description }}</p>
-      </div>
-      <!-- <div class="bell-container">
-        <button class="bell-button"><i class="fas fa-bell"></i></button>
-      </div> -->
-    </div>
-    <div class="bus-content">
-      <p>Time: {{ bus.time }}</p>
-    </div>
+ <!-- Page Title -->
+ <div class="page-title">
+  <h1><i class="fas fa-bus"></i> Bus Search</h1>
+</div>
+
+<!-- Search Header -->
+<div class="search-header wow fadeIn" data-wow-delay="0.1s">
+  <div class="search-bar">
+      <input
+          type="number"
+          placeholder="Search Buses..."
+          id="fromInput"
+          #input
+          [(ngModel)]="inputQuery"
+          (input)="onSearch(input.value)"
+      />
+      <button class="cancel-button" (click)="onCancelClicked()">
+          <i class="fas fa-times-circle"></i> Cancel
+      </button>
   </div>
+</div>
+
+<div class="nearby-buses">
+  <h3><i class="fas fa-map-marker-alt"></i> Nearby Buses</h3>
+</div>
+
+<!-- Display matching locations -->
+<div *ngIf="inputQuery.length > 0">
+  <div *ngFor="let location of filteredLocation" class="location-item">
+      <h3><i class="fas fa-bus-alt"></i> {{ location.name }} ({{ location.type }})</h3>
+      <h4><i class="fas fa-bus"></i> Buses:</h4>
+      <ul>
+          <li *ngFor="let bus of location.buses"><i class="fas fa-route"></i> {{ bus }}</li>
+      </ul>
+  </div>
+</div>
+
+<div class="nearby-item" *ngIf="inputQuery.length === 0">
+  <h4><i class="fas fa-search"></i> Search for buses...</h4>
 </div>

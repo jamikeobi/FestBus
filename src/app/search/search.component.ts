@@ -65,6 +65,45 @@ export class SearchComponent implements OnInit {
     this.locationSuggestionsTo = this.searchLocationService.searchLocations(this.toInput.nativeElement.value);
   }
 
+  navigateUsingStoredQueries(index: number) {
+    const storedQueries = localStorage.getItem('searchResults');
+
+    if (storedQueries) {
+        const parsedQueries = JSON.parse(storedQueries);
+        console.log("Parsed Queries:", parsedQueries); // Log the parsed queries
+
+        if (Array.isArray(parsedQueries) && parsedQueries.length > index) {
+            const selectedQuery = parsedQueries[index];
+
+            const fromQuery = selectedQuery.start || '';
+            const toQuery = selectedQuery.end || '';
+
+            console.log('From Query:', fromQuery); // Debugging: log fromQuery
+            console.log('To Query:', toQuery); // Debugging: log toQuery
+
+            if (fromQuery.length > 1 && toQuery.length > 1) {
+                console.log('Navigating with stored queries:', fromQuery, toQuery); // Debugging: log the input queries
+
+                // Navigate to the '/route' path with query parameters 'query1' and 'query2'
+                this.router.navigate(['/route'], { queryParams: { query1: fromQuery, query2: toQuery } });
+
+                // (Optionally) Generate current date and time, calculate duration, expected arrival, etc.
+
+                // ... (rest of your route details handling)
+            } else {
+                console.error("Invalid stored input: both 'from' and 'to' locations must have more than one character.");
+            }
+        } else {
+            console.error("Invalid index: No valid stored queries found in local storage for the given index.");
+        }
+    } else {
+        console.error("No recent searches found in local storage.");
+    }
+}
+
+
+
+
   // Triggered when the user clicks the search button
   onSearch() {
     // Trim input values from the 'from' and 'to' fields

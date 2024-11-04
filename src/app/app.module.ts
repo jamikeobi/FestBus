@@ -25,6 +25,7 @@ import { RouteComponent } from './route/route.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ModalSearchComponent } from './route/modal-search/modal-search.component';
 import { FormsModule } from '@angular/forms';
+import { ReportComponent } from './report/report.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { FormsModule } from '@angular/forms';
     SearchComponent,
     RouteComponent,
     ModalSearchComponent,
+    ReportComponent,
   ],
   imports: [
     BrowserModule,

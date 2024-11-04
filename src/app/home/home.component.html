@@ -19,25 +19,31 @@
     <!-- <button class="search-button" (click)="onSearchClickButton()">Search</button> -->
   </section>
 
-  <!-- Current Bus Stop Section -->
-  <section
-    class="current-bus-stop-section wow fadeIn"
-    data-wow-delay="0.5s"
-    style="background-color: black"
-  >
-    <h2>Current Bus Stop</h2>
+<!-- Current Bus Stop Section -->
+<section class="current-bus-stop-section wow fadeIn" data-wow-delay="0.5s" style="background-color: black">
+  <h2>Current Bus Stop</h2>
+  
+  <!-- Loading state -->
+  <div *ngIf="loadingClosestBusStop" class="loading-indicator">
+    <p>Loading closest bus stop...</p>
+  </div>
+
+  <!-- Display bus stop information if available -->
+  <div *ngIf="!loadingClosestBusStop">
     <p>
-      Bus Stop Name:
-      <span id="current-bus-stop">1st Avenue, D Close, 201 road</span>
+      Bus Stop Name: 
+      <span id="current-bus-stop">{{ closestBusStop?.name || 'No bus stop found' }}</span>
     </p>
-    <h3>Available Buse</h3>
-    <app-bus-list></app-bus-list>
-  </section>
+    <p>
+      Available Bus: <span>{{ availableBus || 'No buses available' }}</span>
+    </p>
+  </div>
+</section>
 
   <!-- Report / Contact button Section -->
   <section class="action-buttons-section wow fadeIn" data-wow-delay="0.7s">
     <div class="action-buttons">
-      <button class="report-button"><i class="fa fa-ticket"></i> Report</button>
+      <button class="report-button"><i class="fa fa-ticket"></i><a href="/report">Report</a></button>
       <button class="contact-button">
         <i class="fa fa-home"></i> Contact Us
       </button>
@@ -50,8 +56,11 @@
     <ul class="nearby-list" *ngIf="locations$ | async as Locations">
       <li class="nearby-item" *ngFor="let busStop of Locations | slice:0:5">
         <h4>{{ busStop.name }}</h4>
-        <p>Available Buses: {{ busStop.buses }}</p>
+        <p>Available Buses: {{ busStop.buses.join(', ') }}</p>
       </li>
     </ul>
   </section>
 </div>
+
+<!-- Conditional Loader in Angular -->
+<div *ngIf="isLoading" class="loader"></div>

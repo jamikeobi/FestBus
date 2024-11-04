@@ -4,6 +4,7 @@ import { MapsearchService } from '../Services/mapService/mapsearch.service';
 import { ActivatedRoute } from '@angular/router';
 import { Route } from '../Models/route';
 import 'leaflet-routing-machine'
+import { SearchLocationService } from '../Services/searchLocation/search-location.service';
 
 @Component({
   selector: 'app-route',
@@ -16,17 +17,22 @@ export class RouteComponent implements OnInit {
   fromQuery: string = '';
   toQuery: string = '';
   minutesToTravelToDestination: number = 0;
+  buses: string[] = []; //to hold bus array
+  firstTwoBuses: string[] = []; //to hold the first 2 buses
 
   routeDetails:  Route | null = null;
   selectedRoute: any = true;
   stopsAlongTheWay: any;
+  isLoading: boolean = false;
 
   constructor(
     private mapService: MapsearchService,
+    private searchLocationService: SearchLocationService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.route.queryParams.subscribe((params) => {
       this.fromQuery = params['query1'] || '';
       this.toQuery = params['query2'] || '';
@@ -36,6 +42,7 @@ export class RouteComponent implements OnInit {
       this.retrieveRouteDetails();
       // Get current location and initialize map after geolocation is successful
       this.getCurrentLocation();
+      // this.isLoading = false;
     });
   }
 
@@ -46,6 +53,12 @@ export class RouteComponent implements OnInit {
     if (routeDetails) {
       this.routeDetails = JSON.parse(routeDetails);
       const route: Route = JSON.parse(routeDetails);
+      this.buses = route.buses
+      console.log('Buses',this.buses);
+
+      this.firstTwoBuses = this.buses.splice(0,2);
+      console.log('First two buses:', this.firstTwoBuses);
+      
       // Use the route details as needed
       console.log('Retrieved route details:', route);
     } else {
@@ -53,15 +66,35 @@ export class RouteComponent implements OnInit {
     }
   }
 
+  // getBusesForStartLocation(){
+  //   this.buses = this.
+  // }
+
   private getCurrentLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords;
-
-          // Initialize the map after fetching the user's location
-          this.map = L.map('map').setView([latitude, longitude], 13);
-
+          let latitude: number;
+          let longitude: number;
+  
+          // Check if routeDetails exist and contain valid coordinates
+          if (this.routeDetails && this.routeDetails.fromLatitude && this.routeDetails.fromLongitude) {
+            this.isLoading = true;
+            latitude = this.routeDetails.fromLatitude;
+            longitude = this.routeDetails.fromLongitude;
+            this.isLoading = false;
+            // this.isLoading = false;
+            console.log("Using routeDetails coordinates as initial position:", latitude, longitude);
+          } else {
+            // Fall back to user's current location if routeDetails are missing or incomplete
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+            console.log("Using user's current location as initial position:", latitude, longitude);
+          }
+  
+          // Initialize the map at the starting coordinates
+          this.map = L.map('map').setView([latitude, longitude], 15);
+  
           const customIcons = L.icon({
             iconUrl: '../../assets/markerIcons/marker-icon-2x.png',
             shadowUrl: '../../assets/markerIcons/marker-shadow.png',
@@ -69,63 +102,72 @@ export class RouteComponent implements OnInit {
             iconAnchor: [12, 41],
             popupAnchor: [1, -34],
             shadowSize: [41, 41]
-          })
-
+          });
+  
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors', //&copy; OpenStreetMap contributors
+            attribution: '&copy; OpenStreetMap contributors',
           }).addTo(this.map);
-
-          L.marker([latitude, longitude], {icon: customIcons})
+  
+          // Add marker for the starting location
+          L.marker([latitude, longitude], { icon: customIcons })
             .addTo(this.map)
-            .bindPopup('You are here')
+            .bindPopup('Starting Location')
             .openPopup();
-
-
-            if(this.routeDetails && this.routeDetails.toLatitude && this.routeDetails.toLongitude && this.routeDetails.fromLatitude && this.routeDetails.fromLongitude){
-              L.marker([this.routeDetails.toLatitude, this.routeDetails.toLongitude], {icon: customIcons})
-            .addTo(this.map)
-            .bindPopup('Your destination')
-            .openPopup();
-
-
-            // Custom route line options
+  
+          if (this.routeDetails && this.routeDetails.toLatitude && this.routeDetails.toLongitude) {
+            // Log destination coordinates for debugging
+            console.log("Destination coordinates:", this.routeDetails.toLatitude, this.routeDetails.toLongitude);
+  
+            // Add marker for the destination
+            L.marker([this.routeDetails.toLatitude, this.routeDetails.toLongitude], { icon: customIcons })
+              .addTo(this.map)
+              .bindPopup('Your destination')
+              .openPopup();
+  
+            // Define custom route line options
             const lineOptions = {
-              styles: [
-                { color: 'green', opacity: 0.8, weight: 3 } // Custom color, opacity, and weight
-              ],
-              addWaypoints: false, // Disable adding waypoints on the route by clicking
-              draggableWaypoints: false, // Disable dragging waypoints
+              styles: [{ color: 'green', opacity: 0.8, weight: 3 }],
+              addWaypoints: false,
+              draggableWaypoints: false,
             };
-
-              (L as any).Routing.control({
-                waypoints: [
-                  L.latLng(latitude, longitude),
-                  L.latLng(this.routeDetails.latitude, this.routeDetails.longitude)
-                ],
-                lineOptions,
-                routeWhileDragging: false,
-                show: false
-              }).on('routesfound', (e: any) => {
-                console.log(e);
-                const routes = e.routes[0] as any; //This gets the first route
-
-                const timeTakenInSeconds = routes.summary.totalTime;
-                const timeTakenInMinutes = Math.round(timeTakenInSeconds / 60);
-                this.minutesToTravelToDestination = timeTakenInMinutes;
-                this.stopsAlongTheWay = routes.waypoints.map((mapWay: any) => {
-                  return {
-                    name: mapWay.name,
-                    lat: mapWay.latLng.lat,
-                    lng: mapWay.latLng.lng
-                  };
-                });
-                console.log('Stops along the way:', this.stopsAlongTheWay);
-              }).addTo(this.map);
-            }
-            
+  
+            // Add routing control to the map
+            const routingControl = (L as any).Routing.control({
+              waypoints: [
+                L.latLng(latitude, longitude),
+                L.latLng(this.routeDetails.toLatitude, this.routeDetails.toLongitude)
+              ],
+              lineOptions,
+              routeWhileDragging: false,
+              show: false
+            })
+            .on('routesfound', (e: any) => {
+              this.isLoading = true;
+              const route = e.routes[0];
+  
+              // Log the found route details for debugging
+              console.log('Route found:', route);
+              this.minutesToTravelToDestination = Math.round(route.summary.totalTime / 60);
+              console.log('Minutes to travel:', this.minutesToTravelToDestination);
+  
+              // Extract instructions for each step along the way
+              this.stopsAlongTheWay = route.instructions.map((instruction: any) => ({
+                direction: instruction.text,
+                distance: instruction.distance,
+              }));
+  
+              console.log('Directions along the way:', this.stopsAlongTheWay);
+              // this.isLoading = false;
+            }).addTo(this.map);
+  
+            // Debugging log to check if routing control is properly added
+            console.log('Routing control added to map');
+          } else {
+            console.error("Route details or destination coordinates are missing.");
+          }
         },
         (error) => {
-          console.error('Error getting location', error);
+          console.error('Error getting location:', error);
           alert('Unable to retrieve your location. Please try again.');
         }
       );
@@ -133,4 +175,7 @@ export class RouteComponent implements OnInit {
       alert('Geolocation is not supported by this browser.');
     }
   }
+  
+  
+
 }

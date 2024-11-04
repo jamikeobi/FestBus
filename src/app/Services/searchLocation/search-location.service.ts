@@ -1,6 +1,7 @@
 import { query } from '@angular/animations';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { Bus } from 'src/app/Models/bus';
 import { Route } from 'src/app/Models/route';
 
 @Injectable({
@@ -66,7 +67,6 @@ export class SearchLocationService {
   getLocations(): Observable<Route[]>{
     return of(this.locations);
   }
-
   //Function to filter and search for locations
   searchLocations(query: string) {
     if (!query) return [];
@@ -75,29 +75,80 @@ export class SearchLocationService {
     );
   }
 
-  // Method to get route details based on the location names
+  searchByBus(busQuery: string) {
+    if (!busQuery) return [];
+    return this.locations.filter((location) =>
+      location.buses.some((bus) => bus.toLowerCase() === busQuery.toLowerCase())
+    );
+  }
+  
+
+ // Method to get route details based on the location names
 getRouteDetails(from: string, to: string): Route | null {
   const fromLocation = this.locations.find(location => location.name.toLowerCase() === from.toLowerCase());
   const toLocation = this.locations.find(location => location.name.toLowerCase() === to.toLowerCase());
 
+  // Debugging output
+  console.log('From Location:', fromLocation);
+  console.log('To Location:', toLocation);
+
   if (fromLocation && toLocation) {
     // Create a new Route object based on the found locations
     return {
-      id: fromLocation.id, // or a new unique id if you prefer
+      id: fromLocation.id, // You might want to create a unique id for the route
       name: `${from} to ${to}`,
       type: 'Route', // Set the type as desired
       buses: [...fromLocation.buses, ...toLocation.buses], // Combine buses from both locations
-      latitude: (fromLocation.latitude),
-      longitude: (fromLocation.longitude),
-      fromLatitude: (fromLocation.latitude),
-      fromLongitude: (fromLocation.longitude),
-      toLatitude: (fromLocation.latitude),
-      toLongitude: (fromLocation.longitude)
+      latitude: fromLocation.latitude, // Optionally use the fromLocation latitude for this field
+      longitude: fromLocation.longitude, // Optionally use the fromLocation longitude for this field
+      fromLatitude: fromLocation.latitude,
+      fromLongitude: fromLocation.longitude,
+      toLatitude: toLocation.latitude, // Use toLocation latitude here
+      toLongitude: toLocation.longitude // Use toLocation longitude here
     };
   }
 
   return null; // Return null if either location is not found
 }
 
+
+getBusesFromLocation(locationName: string): string[] | null {
+  const location = this.locations.find(loc => loc.name.toLowerCase() === locationName.toLowerCase());
+  return location ? location.buses : null; // Return buses for the found location
+}
+
+
+// Calculate distance between two latitude/longitude pairs
+private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Radius of the Earth in km
+  const dLat = this.degreesToRadians(lat2 - lat1);
+  const dLon = this.degreesToRadians(lon2 - lon1);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.degreesToRadians(lat1)) * Math.cos(this.degreesToRadians(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+}
+
+// Convert degrees to radians
+private degreesToRadians(degrees: number): number {
+  return degrees * (Math.PI / 180);
+}
+
+// Get the closest bus stop to the user's location
+getClosestBusStop(userLatitude: number, userLongitude: number): Observable<Route | null> {
+  let closestBusStop: Route | null = null;
+  let minDistance: number = Infinity;
+
+  this.locations.forEach(location => {
+    const distance = this.calculateDistance(userLatitude, userLongitude, location.latitude, location.longitude);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestBusStop = location;
+    }
+  });
+
+  return of(closestBusStop); // Return the closest bus stop as an observable
+}
   
 }

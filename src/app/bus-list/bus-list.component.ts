@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { SearchLocationService } from '../Services/searchLocation/search-location.service';
+import { Observable } from 'rxjs';
+import { Bus } from '../Models/bus';
+import { Route } from '../Models/route';
 
 @Component({
   selector: 'app-bus-list',
@@ -6,13 +10,38 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./bus-list.component.css']
 })
 export class BusListComponent implements OnInit {
-  buses = [
-    { id: 1, name: '1st Avenue', description: '1 min walk towards Total Fueling Station', time: '18 min' }
-    // { id: 2, name: 'Glenvarloch Crescent', description: '16 min walk towards Mayfield or Gorebridge', time: '16 min' },
-    // { id: 3, name: 'Mayfield', description: 'Bus 3, towards central', time: '40 min' },
-  ];
+location$!: Observable<Bus[]>
+filteredLocation: Bus[] = [];
+inputQuery: string = '';
 
-  constructor() {}
+locationSuggestionsFrom: Array<{ name: string; type: string; }> = []; 
 
-  ngOnInit(): void {}
+
+searchResults: Array<{ start: string; end: string; expectedArrival: string; expectedDropOff: string; duration: string; }> = [];
+
+
+@ViewChild('input', { static: false }) input!: ElementRef<HTMLInputElement>;
+
+
+  constructor(private searchLocationService: SearchLocationService) {}
+
+  ngOnInit(): void {
+    this.location$ = this.searchLocationService.getLocations();
+  }
+
+  onCancelClicked(){
+    this.inputQuery = '';
+  }
+  onSearch(query: string){
+    this.inputQuery = query;
+    if(!query) {
+      this.filteredLocation = [];
+    }
+
+    this.location$.subscribe((location) => {
+      this.filteredLocation = location.filter(location =>
+        location.buses.some(bus => bus.toLowerCase().includes(query.toLowerCase()))
+      )
+    })
+  }
 }

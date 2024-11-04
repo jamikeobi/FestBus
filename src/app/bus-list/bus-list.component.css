@@ -1,56 +1,123 @@
-/* bus-list.component.css */
-
-.bus-list {
+/* General Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f5f5f5; /* Light gray background */
+  color: #333; /* Dark text for readability */
+  min-height: calc(100vh - 60px); /* Ensure body takes up full height minus footer */
   display: flex;
-  flex-direction: column;
-  gap: 10px; /* Space between bus items */
-  margin: 15px; /* Margin around the bus list */
+  flex-direction: column; /* Enable flex layout for spacing */
 }
 
-.bus-item {
-  /* width: 100px; */
+.page-title h1 {
+  text-align: center;
+  color: #3A7D3B; /* Primary color */
+  font-weight: 700;
+}
+
+/* Search Header */
+.search-header {
+  margin-bottom: 20px;
+}
+
+.search-bar {
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  padding: 10px; /* Padding inside each bus item */
-  background-color: rgb(79, 78, 78); /* Dark background */
-  color: white; /* Text color */
-  border-radius: 5px; /* Rounded corners */
+  justify-content: center;
+  align-items: center;
 }
 
-.bus-header {
+.search-bar input {
+  padding: 12px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  width: 400px; /* Increased width for the search bar */
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-bar input:focus {
+  border-color: #3A7D3B; /* Primary color */
+  box-shadow: 0 0 5px rgba(58, 125, 59, 0.5);
+  outline: none; /* Remove outline */
+}
+
+.cancel-button {
+  padding: 12px 15px;
+  border: none;
+  background-color: #3A7D3B; /* Primary color */
+  color: white;
+  border-radius: 5px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.cancel-button:hover {
+  background-color: #2c5930; /* Darker shade for hover effect */
+  transform: translateY(-2px);
+}
+
+/* Nearby Buses Section */
+.nearby-buses {
+  margin: 20px 0;
+}
+
+.nearby-buses h3 {
+  font-size: 24px;
+  color: #3A7D3B; /* Primary color */
+  border-bottom: 2px solid #3A7D3B; /* Underline for the header */
+  padding-bottom: 10px;
+}
+
+/* Location Item Styles */
+.location-item {
+  background: white;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.location-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.location-item h3 {
+  margin: 0 0 5px;
+  font-size: 20px; /* Slightly smaller font for location name */
+  color: #3A7D3B; /* Primary color */
+}
+
+.location-item h4 {
+  margin: 5px 0;
+  font-size: 16px; /* Smaller font for bus label */
+  color: #666;
+}
+
+.location-item ul {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0;
+  margin: 5px 0 0; /* Slight margin for spacing */
+}
+
+.location-item li {
+  margin: 3px 0; /* Smaller margin for items */
+  font-size: 14px; /* Smaller font for bus names */
   display: flex;
-  align-items: center; /* Align header items vertically */
+  align-items: center;
 }
 
-.bus-icon {
-  background-color:  rgb(18, 137, 11); /* Icon background color */
-  width: 40px; /* Icon width */
-  height: 40px; /* Icon height */
-  border-radius: 50%; /* Circle shape */
-  display: flex; /* Use flex to center icon */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  color: white; /* Icon color */
-  margin-right: 10px; /* Space between icon and title */
+.location-item li i {
+  margin-right: 5px; /* Space between icon and text */
 }
 
-.bus-title {
-  margin: 0; /* Remove default margin */
-  font-size: 20px; /* Font size for title */
-  font-weight: bold; /* Bold title */
-}
-
-.bus-description {
-  margin: 0; /* Remove default margin */
-  font-size: 14px; /* Font size for description */
-  color: #b0bec5; /* Lighter color for description */
-}
-
-.bus-content {
-  margin-top: 10px; /* Space above time */
-  font-size: 16px; /* Font size for time */
-}
-
-.bell-container{
-  
+/* Nearby Item */
+.nearby-item {
+  text-align: center;
+  color: #666;
+  font-size: 18px;
 }
