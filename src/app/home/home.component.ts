@@ -36,6 +36,13 @@ export class HomeComponent implements OnInit {
     this.locations$ = this.searchLocationService.getLocations()
   }
   
+   // Method to navigate to the route page with query parameters
+   navigateToRoutePage(busStop: any): void {
+    const { name, latitude, longitude } = busStop;
+    this.router.navigate(['/route'], {
+      queryParams: { stopName: name, lat: latitude, lon: longitude },
+    });
+  }
 
 
 

@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="loader" *ngIf="isLoading"></div>
+  <!-- <div class="loader" *ngIf="isLoading"></div> -->
   <h1 class="page-title">Route Details <i class="fas fa-route"></i></h1>
 
   <!-- Route Details Section -->
@@ -10,38 +10,35 @@
       <div id="map"></div>
     </div>
 
-    <!-- Section 2: Duration -->
-    <div *ngIf="minutesToTravelToDestination" class="duration card">
-      <i class="fas fa-clock"></i> Estimated travel time: {{ minutesToTravelToDestination }} minutes
-    </div>
-    
     <div class="location-info">
-      <p><strong>From:</strong> {{ fromQuery }}</p>
-      <p><strong>To:</strong> {{ toQuery }}</p>
+      <p><strong>From:</strong> {{ fromQuery || stopName}}</p>
+      <p><strong>To:</strong> {{ toQuery || stopName}}</p>
     </div>
   </div>
 
-  <div *ngIf="firstTwoBuses.length > 0" class="buses-available card">
+  <div *ngIf="firstTwoBuses.length > 0" class="directions-wrapper card">
     <h3><i class="fas fa-bus"></i> Buses Available from {{ fromQuery }}:</h3>
     <ul>
-      <li *ngFor="let bus of firstTwoBuses"><i class="fas fa-arrow-right"></i> {{ bus }}</li>
-    </ul>
-  </div>
-
-  <!-- Section 3: Stops Breakdown -->
-  <div *ngIf="stopsAlongTheWay.length > 0" class="directions-wrapper card">
-    <h3><i class="fas fa-directions"></i> Directions to Destination</h3>
-    <ul>
-      <li *ngFor="let stop of stopsAlongTheWay">
-        <i class="fas fa-map-marker-alt"></i>
-        <strong>Direction:</strong> {{ stop.direction }}<br />
-        <strong>Distance:</strong> {{ stop.distance | number: '1.0-1' }} meters
+      <li *ngFor="let bus of firstTwoBuses" (click)="onBusClick()">
+        <i class="fas fa-arrow-right"></i> {{ bus }}
       </li>
     </ul>
   </div>
 
-  <div *ngIf="stopsAlongTheWay.length === 0" class="no-stops">
-    <p style="color: red;"><i class="fas fa-exclamation-triangle"></i> No stops found along the way.</p>
+  <!-- Section 3: Stops Breakdown -->
+  <div *ngIf="stopsAlongTheWays" class="popup-overlay">
+    <div class="popup-content" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <h3><i class="fas fa-directions"></i> Stops along the way</h3>
+        <button class="close-btn" (click)="onClosePopup()">✖</button>
+      </div>
+      <ul class="stop-list">
+        <li *ngFor="let stop of selectedBuses" class="stop-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <strong>Stop: </strong> {{stop}}
+        </li>
+      </ul>
+    </div>
   </div>
+  
 </div>
-

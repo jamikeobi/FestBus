@@ -2,7 +2,6 @@
   <!-- Search Header -->
   <div class="search-header wow fadeIn" data-wow-delay="0.1s">
     <div class="search-bar">
-      <i class="fa fa-search" (click)="onSearch()"></i>
       <!-- From Input field -->
       <input
         type="text"
@@ -11,6 +10,7 @@
         #fromInput
         [(ngModel)]="fromQuery"
         (input)="OnFromInputChange()"
+        (keyup.enter)="onSearch()"
       />
 
       <!-- To Input field -->
@@ -21,49 +21,44 @@
         #toInput
         [(ngModel)]="toQuery"
         (input)="OnToInputChange()"
+        (keyup.enter)="onSearch()"
       />
     </div>
     <div class="cancel-button" (click)="clearInput()">Cancel</div>
-    <button
-      class="toggle-sidebar-btn"
+    <div
+      class="cancel-button"
       (click)="toggleSidebar()"
       *ngIf="searchResults.length > 0"
       id="toggleSidebarBtn"
     >
       {{ isSidebarOpen ? "Hide History" : "Show History" }}
-    </button>
+    </div>
   </div>
-  <!-- Suggestions for the form Input -->
+
+  <!-- Suggestions for the 'From' Input -->
   <div class="suggestions" *ngIf="locationSuggestionsFrom.length > 0">
     <ul>
       <li
         *ngFor="let location of locationSuggestionsFrom"
-        (click)="
-          fromQuery = location.name;
-          fromInput.value = location.name;
-          locationSuggestionsFrom = []
-        "
+        (click)="selectLocation('from', location.name)"
       >
         {{ location.name }}
       </li>
     </ul>
   </div>
 
-  <!-- Suggestions for the TO Input -->
+  <!-- Suggestions for the 'To' Input -->
   <div class="suggestions" *ngIf="locationSuggestionsTo.length > 0">
     <ul>
       <li
         *ngFor="let location of locationSuggestionsTo"
-        (click)="
-          toQuery = location.name;
-          toInput.value = location.name;
-          locationSuggestionsTo = []
-        "
+        (click)="selectLocation('to', location.name)"
       >
         {{ location.name }}
       </li>
     </ul>
   </div>
+
   <!-- Backdrop for overlay effect -->
   <div
     class="backdrop"
@@ -80,16 +75,13 @@
   >
     <div class="section-header" *ngIf="searchResults.length > 0">
       <p>Search History</p>
-      <button class="clear-history-btn" (click)="clearSearchHistory()">
+      <button class="cancel-button" (click)="clearSearchHistory()">
         Clear History
       </button>
     </div>
-    <div class="recent-searches">
+    <div class="recent-searches" *ngIf="searchResults.length > 0">
       <ul class="routes-list">
-        <li
-          class="route-item"
-          *ngFor="let result of searchResults; let i = index"
-        >
+        <li *ngFor="let result of searchResults; let i = index">
           <div class="details">
             <strong>{{ result.start }} to {{ result.end }}</strong>
             <p>Expected Arrival: {{ result.expectedArrival }}</p>
@@ -111,32 +103,27 @@
   </div>
 
   <!-- Recent Searches Section -->
-  <div class="section-header wow fadeIn">
+  <div class="section-header wow fadeIn" *ngIf="searchResults.length > 0" data-wow-delay="0.7s">
     <h3>Recent Searches</h3>
     <ul class="routes-list">
-      <!-- Display search results -->
-        <li
-          *ngFor="let result of searchResults; let i = index"
-          class="route-item"
-        >
-          <div class="time-details">
-            <div class="time-info">
-              <p class="start-time">{{ result.start }}</p>
-              <p class="start-time">{{ result.end }}</p>
-              <p class="duration">Takes {{ result.duration }}</p>
-            </div>
-            <div class="leave-time">
-              <!-- <p class="end-time">{{ result.end }}</p> -->
-              <p class="leave-info">
-                Arrives: {{ result.expectedArrival }} <i class="fa-solid fa-minus"></i> Drop-off:
-                {{ result.expectedDropOff }}
-              </p>
-            </div>
+      <li *ngFor="let result of searchResults; let i = index" class="route-item">
+        <div class="time-details">
+          <div class="time-info">
+            <p class="start-time">{{ result.start }}</p>
+            <p class="start-time">{{ result.end }}</p>
+            <p class="duration">Takes {{ result.duration }}</p>
           </div>
-          <div class="bus-details">
-            <i class="fa fa-chevron-right" (click)="navigateUsingStoredQueries(i)"></i>
+          <div class="leave-time">
+            <p class="leave-info">
+              Arrives: {{ result.expectedArrival }} <i class="fa-solid fa-minus"></i> Drop-off: 
+              {{ result.expectedDropOff }}
+            </p>
           </div>
-        </li>
+        </div>
+        <div class="bus-details">
+          <i class="fa fa-chevron-right" (click)="navigateUsingStoredQueries(i)"></i>
+        </div>
+      </li>
     </ul>
   </div>
 </div>

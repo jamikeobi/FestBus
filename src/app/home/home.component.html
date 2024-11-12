@@ -43,8 +43,8 @@
   <!-- Report / Contact button Section -->
   <section class="action-buttons-section wow fadeIn" data-wow-delay="0.7s">
     <div class="action-buttons">
-      <button class="report-button"><i class="fa fa-ticket"></i><a href="/report">Report</a></button>
-      <button class="contact-button">
+      <button class="cancel-button"><i class="fa fa-ticket"></i><a href="/report">Report</a></button>
+      <button class="cancel-button">
         <i class="fa fa-home"></i> Contact Us
       </button>
     </div>
@@ -53,11 +53,13 @@
   <!-- Nearby Bus Stops Section -->
   <section class="nearby-section wow fadeIn" data-wow-delay="0.7s">
     <h2>Nearby Bus Stops</h2>
-    <ul class="nearby-list" *ngIf="locations$ | async as Locations">
+    <ul class="nearby-list" *ngIf="locations$ | async as Locations" style="cursor: pointer;">
+      <a href="/route?query1=1st%20Avenue&query2=Egbeada%20Close">
       <li class="nearby-item" *ngFor="let busStop of Locations | slice:0:5">
-        <h4>{{ busStop.name }}</h4>
+        <h4 style="color: black;">{{ busStop.name }}</h4>
         <p>Available Buses: {{ busStop.buses.join(', ') }}</p>
       </li>
+      </a>
     </ul>
   </section>
 </div>

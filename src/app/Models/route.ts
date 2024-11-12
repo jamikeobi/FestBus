@@ -11,6 +11,7 @@ export class Route {
     toLatitude?: number;
     fromLongitude?: number;
     toLongitude?: number;
+    stops?: string;
     buses: string[];
 
 
@@ -27,6 +28,7 @@ export class Route {
     this.fromLongitude = 0;
     this.toLatitude = 0;
     this.toLongitude = 0;
+    this.stops = '';
     this.buses = [];
   }
 }

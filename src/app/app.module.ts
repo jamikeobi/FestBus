@@ -24,7 +24,7 @@ import { SearchComponent } from './search/search.component';
 import { RouteComponent } from './route/route.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ModalSearchComponent } from './route/modal-search/modal-search.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportComponent } from './report/report.component';
 
 
@@ -41,6 +41,7 @@ import { ReportComponent } from './report/report.component';
     ReportComponent,
   ],
   imports: [
+    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,

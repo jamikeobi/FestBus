@@ -20,9 +20,13 @@ export class RouteComponent implements OnInit {
   buses: string[] = []; //to hold bus array
   firstTwoBuses: string[] = []; //to hold the first 2 buses
 
+  stopName: string = '';
+  lat: number = 0;
+  lon: number = 0;
   routeDetails:  Route | null = null;
   selectedRoute: any = true;
-  stopsAlongTheWay: any;
+  stopsAlongTheWays:boolean = false;
+  selectedBuses: string[] = [];
   isLoading: boolean = false;
 
   constructor(
@@ -33,19 +37,76 @@ export class RouteComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+  
+    // Listen for query parameters
     this.route.queryParams.subscribe((params) => {
+      // Retrieve query parameters for 'query1' (from) and 'query2' (to)
       this.fromQuery = params['query1'] || '';
       this.toQuery = params['query2'] || '';
-
+  
       console.log('From:', this.fromQuery);
       console.log('To:', this.toQuery);
-      this.retrieveRouteDetails();
+  
+      // Check if either 'fromQuery' or 'toQuery' is empty and initialize the map with default location
+      if (!this.fromQuery || !this.toQuery) {
+        console.warn('One or both of the query parameters (from or to) are missing.');
+        // If either is missing, use Festac Town, Lagos as the default location
+       // Initialize the map at the starting coordinates
+       this.map = L.map('map').setView([6.4971, 3.3483], 15);
+  
+       const customIcons = L.icon({
+         iconUrl: '../../assets/markerIcons/marker-icon-2x.png',
+         shadowUrl: '../../assets/markerIcons/marker-shadow.png',
+         iconSize: [25, 41],
+         iconAnchor: [12, 41],
+         popupAnchor: [1, -34],
+         shadowSize: [41, 41]
+       });
+
+       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+         attribution: '&copy; OpenStreetMap contributors',
+       }).addTo(this.map);
+
+       // Add marker for the starting location
+       L.marker([6.4971, 3.3483], { icon: customIcons })
+         .addTo(this.map)
+         .bindPopup('Starting Location')
+         .openPopup();
+      } else {
+        // If both queries are present, proceed with usual logic
+        this.retrieveRouteDetails();
+      }
+  
       // Get current location and initialize map after geolocation is successful
       this.getCurrentLocation();
-      // this.isLoading = false;
+    });
+  
+    // Listen for additional parameters (stopName, lat, lon)
+    this.route.queryParams.subscribe((params) => {
+      this.stopName = params['stopName'];
+      this.lat = parseFloat(params['lat']);
+      this.lon = parseFloat(params['lon']);
+  
+      console.log('Stop Name:', this.stopName);
+      console.log('Latitude:', this.lat);
+      console.log('Longitude:', this.lon);
     });
   }
+  
+  
+  
+  onClosePopup(){
+    this.stopsAlongTheWays = false;
+  }
 
+  onBusClick(){
+    this.stopsAlongTheWays = !this.stopsAlongTheWays;
+
+    if(this.stopsAlongTheWays){
+      this.selectedBuses = this.searchLocationService.getRandomStops(5);
+      console.log('Stops for selected bus:', this.selectedBuses);
+    }
+  }
   //Retrieve Route Details
   retrieveRouteDetails() {
     // Retrieve route details from localStorage
@@ -149,14 +210,6 @@ export class RouteComponent implements OnInit {
               console.log('Route found:', route);
               this.minutesToTravelToDestination = Math.round(route.summary.totalTime / 60);
               console.log('Minutes to travel:', this.minutesToTravelToDestination);
-  
-              // Extract instructions for each step along the way
-              this.stopsAlongTheWay = route.instructions.map((instruction: any) => ({
-                direction: instruction.text,
-                distance: instruction.distance,
-              }));
-  
-              console.log('Directions along the way:', this.stopsAlongTheWay);
               // this.isLoading = false;
             }).addTo(this.map);
   

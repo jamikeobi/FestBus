@@ -6,18 +6,16 @@
   font-family: 'Arial', sans-serif;
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  transition: background-color 0.3s ease; /* Background color transition */
+  transition: background-color 0.3s ease;
 }
 
-/* Page Title */
 .page-title {
   text-align: center;
   font-size: 28px;
   margin-bottom: 20px;
-  color: #e0e0e0; /* Light color for contrast */
+  color: #e0e0e0;
 }
 
-/* Route Details */
 .route-details {
   margin-bottom: 20px;
 }
@@ -28,28 +26,18 @@
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Card Hover Effects */
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Section Titles */
 .route-details h2, .route-details h3 {
-  color: #e0e0e0; /* Light color for contrast */
+  color: #e0e0e0;
   font-size: 20px;
   margin-bottom: 15px;
-  position: relative;
-}
-
-/* Section Title Icons */
-.route-details h2 i, .route-details h3 i {
-  margin-right: 10px; /* Space between icon and title */
-  color: #b52d2d; /* Different color for icons */
 }
 
 /* Map Display */
@@ -61,48 +49,51 @@
   border-radius: 10px;
 }
 
-/* Duration */
-.duration {
-  font-size: 18px;
-  color: #ffffff;
-  margin-bottom: 20px;
-}
-
-/* Location Info */
 .location-info {
   padding: 10px 0;
 }
 
-/* Buses Available */
-.buses-available {
-  margin-bottom: 20px;
+/* Popup Overlay */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-.buses-available ul {
-  list-style: none;
-  padding: 0;
+/* Popup Content */
+.popup-content {
+  background-color: rgba(50, 50, 50, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  max-width: 400px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-.buses-available li {
-  font-size: 16px;
-  padding: 10px;
-  background-color: rgba(70, 70, 70, 0.7);
-  margin-bottom: 5px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease; /* Background color transition for list items */
-}
-
-.buses-available li:hover {
-  background-color: rgba(100, 100, 100, 0.8); /* Darker shade on hover */
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 /* Stops List */
 .directions-wrapper {
-  max-height: calc(100vh - 150px); /* Adjust to your needs */
-  overflow-y: auto;
-  padding-bottom: 80px;
-  position: relative;
-  z-index: 4;
+  margin-bottom: 150px;
 }
 
 .directions-wrapper ul {
@@ -116,59 +107,98 @@
   background-color: rgba(70, 70, 70, 0.7);
   margin-bottom: 5px;
   border-radius: 5px;
-  transition: background-color 0.3s ease; /* Background color transition for list items */
 }
 
 .directions-wrapper li:hover {
-  background-color: rgba(100, 100, 100, 0.8); /* Darker shade on hover */
+  background-color: rgba(100, 100, 100, 0.8);
+}
+/* Overlay Style */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
 }
 
-/* No Stops Message */
-.no-stops {
-  text-align: center;
-  color: red;
-  font-size: 18px;
-}
-
-/* Icons */
-i {
-  margin-right: 8px; /* Space between icon and text */
-}
-
-/* Footer Adjustment */
-footer {
-  margin-top: 20px; /* Ensure the footer does not overlap */
-}
-
-
-/* HTML: <div class="loader"></div> */
-.loader {
-  width: 50px;
-  aspect-ratio: 1;
-  box-shadow: 0 0 0 3px #fff inset;
-  border-radius: 50%;
+/* Popup Content Style */
+.popup-content {
+  background-color: rgba(50, 50, 50, 0.9);
+  padding: 20px;
+  border-radius: 15px;
   position: relative;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
-.loader:before,
-.loader:after {
-  content: "";
-  position: absolute;
-  top: 5px;
-  left: calc(50% - 12.5px);
-  box-shadow: inherit;
-  width: 25px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  transform-origin: 50% calc(100% - 5px);
-  animation: l7 1.5s linear infinite;
+
+/* Popup Header Style */
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
-.loader:after {
-  top: calc(100% + 2px);
-  transform-origin: 50% -27px;
-  animation-delay: -0.75s;
+
+.popup-header h3 {
+  font-size: 18px;
+  color: #fff;
+  margin: 0;
 }
-@keyframes l7 {
-  to {
-    transform: rotate(360deg);
-  }
+
+.popup-header .close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.popup-header .close-btn:hover {
+  color: rgb(3, 26, 2);
+}
+
+/* Stop List Style */
+.stop-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #fff;
+}
+
+.stop-item {
+  display: flex;
+  align-items: center;
+  background-color: rgba(70, 70, 70, 0.8);
+  padding: 12px 18px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.stop-item:hover {
+  background-color: rgba(100, 100, 100, 0.9);
+}
+
+.stop-item i {
+  margin-right: 10px;
+  color: rgb(3, 26, 2);
+}
+
+.stop-item strong {
+  font-weight: bold;
+}
+
+/* Additional Styling */
+.stop-list li + li {
+  margin-top: 10px;
 }

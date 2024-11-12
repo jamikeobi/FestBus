@@ -64,6 +64,20 @@ export class SearchLocationService {
   
   constructor() {}
 
+   stopNames = this.locations.map(location => location.name);
+
+   getRandomStops(count: number): string[] {
+    const shuffled = this.stopNames.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count); // Return the first `count` items from the shuffled array
+  }
+   
+  
+   assignStops(){
+    this.locations.forEach(location => {
+      location['stops'] = location['name']
+    })
+   }
+
   getLocations(): Observable<Route[]>{
     return of(this.locations);
   }
