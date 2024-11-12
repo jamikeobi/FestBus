@@ -24,15 +24,18 @@
         (keyup.enter)="onSearch()"
       />
     </div>
-    <div class="cancel-button" (click)="clearInput()">Cancel</div>
-    <div
-      class="cancel-button"
-      (click)="toggleSidebar()"
-      *ngIf="searchResults.length > 0"
-      id="toggleSidebarBtn"
-    >
-      {{ isSidebarOpen ? "Hide History" : "Show History" }}
+    <div class="buttons-container">
+      <div class="cancel-button" (click)="clearInput()">Cancel</div>
+      <div
+        class="cancel-button"
+        (click)="toggleSidebar()"
+        *ngIf="searchResults.length > 0"
+        id="toggleSidebarBtn"
+      >
+        {{ isSidebarOpen ? "Hide History" : "Show History" }}
+      </div>
     </div>
+    
   </div>
 
   <!-- Suggestions for the 'From' Input -->

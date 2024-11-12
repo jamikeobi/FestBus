@@ -18,7 +18,11 @@ body {
   margin: 0 auto;
   transition: padding-right 0.3s ease; /* Smooth transition when sidebar opens */
 }
-
+.buttons-container {
+  display: flex;
+  gap: 10px; /* Adjust the gap between the buttons */
+  align-items: center; /* Optional: vertically center the buttons */
+}
 /* Adjustments for proper layout control */
 .search-header {
   display: flex;
