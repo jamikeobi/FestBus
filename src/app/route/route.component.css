@@ -52,7 +52,6 @@
 .location-info {
   padding: 10px 0;
 }
-
 /* Popup Overlay */
 .popup-overlay {
   position: fixed;
@@ -60,23 +59,27 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow: auto; /* Ensure the overlay allows scrolling if necessary */
+  padding: 20px; /* Allow padding to ensure content is not right on the edge */
+  margin-bottom: 100px;
 }
 
 /* Popup Content */
 .popup-content {
   background-color: rgba(50, 50, 50, 0.9);
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 15px;
   position: relative;
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
+  max-height: 80vh; /* Set max height for content */
+  overflow-y: auto; /* Enable scrolling for overflow content */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* Close Button */
@@ -91,12 +94,9 @@
   cursor: pointer;
 }
 
-/* Stops List */
-.directions-wrapper {
-  margin-bottom: 150px;
-}
-
+/* Additional Styling */
 .directions-wrapper ul {
+  margin-bottom: 100px;
   list-style: none;
   padding: 0;
 }
@@ -113,62 +113,7 @@
 .directions-wrapper li:hover {
   background-color: rgba(100, 100, 100, 0.8);
 }
-/* Overlay Style */
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  transition: opacity 0.3s ease;
-}
 
-/* Popup Content Style */
-.popup-content {
-  background-color: rgba(50, 50, 50, 0.9);
-  padding: 20px;
-  border-radius: 15px;
-  position: relative;
-  max-width: 500px;
-  width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Popup Header Style */
-.popup-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.popup-header h3 {
-  font-size: 18px;
-  color: #fff;
-  margin: 0;
-}
-
-.popup-header .close-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 24px;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.popup-header .close-btn:hover {
-  color: rgb(3, 26, 2);
-}
-
-/* Stop List Style */
 .stop-list {
   list-style: none;
   padding: 0;
@@ -202,4 +147,21 @@
 /* Additional Styling */
 .stop-list li + li {
   margin-top: 10px;
+}
+
+.cancel-button {
+  padding: 12px 15px;
+  border: none;
+  background-color: #3A7D3B; /* Primary color */
+  color: white;
+  border-radius: 5px;
+  margin-left: 5px; /* Reduce the left margin */
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.cancel-button:hover {
+  background-color: #2c5930; /* Darker shade for hover effect */
+  transform: translateY(-2px);
 }

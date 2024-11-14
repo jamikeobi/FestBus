@@ -13,7 +13,8 @@ import { SearchLocationService } from '../Services/searchLocation/search-locatio
 })
 export class RouteComponent implements OnInit {
   private map: any;
-
+  showMore: boolean = false;
+  showStops: boolean = false;
   fromQuery: string = '';
   toQuery: string = '';
   minutesToTravelToDestination: number = 0;
@@ -27,6 +28,7 @@ export class RouteComponent implements OnInit {
   selectedRoute: any = true;
   stopsAlongTheWays:boolean = false;
   selectedBuses: string[] = [];
+  showMoreBuses: string[] = [];
   isLoading: boolean = false;
 
   constructor(
@@ -99,14 +101,31 @@ export class RouteComponent implements OnInit {
     this.stopsAlongTheWays = false;
   }
 
-  onBusClick(){
+  showMoreStops() {
+    this.showStops = !this.showStops; // Toggle visibility of the additional stops
+  }
+  
+  
+  onBusClick(index: number) {
     this.stopsAlongTheWays = !this.stopsAlongTheWays;
-
-    if(this.stopsAlongTheWays){
+  
+    if (this.stopsAlongTheWays) {
+      // Get the stops for the selected bus
       this.selectedBuses = this.searchLocationService.getRandomStops(5);
       console.log('Stops for selected bus:', this.selectedBuses);
+  
+      if (index === 1) {
+        this.showMore = true;
+        this.showMoreBuses = this.searchLocationService.getRandomStops(4); // Fetch additional stops for the second bus
+      } else {
+        this.showMore = false;
+      }
     }
   }
+  
+  
+  
+
   //Retrieve Route Details
   retrieveRouteDetails() {
     // Retrieve route details from localStorage
@@ -119,7 +138,6 @@ export class RouteComponent implements OnInit {
 
       this.firstTwoBuses = this.buses.splice(0,2);
       console.log('First two buses:', this.firstTwoBuses);
-      
       // Use the route details as needed
       console.log('Retrieved route details:', route);
     } else {

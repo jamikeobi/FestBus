@@ -1,5 +1,4 @@
 <div class="container">
-  <!-- <div class="loader" *ngIf="isLoading"></div> -->
   <h1 class="page-title">Route Details <i class="fas fa-route"></i></h1>
 
   <!-- Route Details Section -->
@@ -19,7 +18,7 @@
   <div *ngIf="firstTwoBuses.length > 0" class="directions-wrapper card">
     <h3><i class="fas fa-bus"></i> Buses Available from {{ fromQuery }}:</h3>
     <ul>
-      <li *ngFor="let bus of firstTwoBuses" (click)="onBusClick()" style="color: red;">
+      <li *ngFor="let bus of firstTwoBuses; let i = index" (click)="onBusClick(i)" style="color: rgb(255,3,11);">
         <i class="fas fa-arrow-right"></i> {{ bus }} leaves in 5 minutes
       </li>
     </ul>
@@ -33,13 +32,29 @@
         <button class="close-btn" (click)="onClosePopup()">✖</button>
       </div>
       <ul class="stop-list">
-        <li *ngFor="let stop of selectedBuses;let i = index" class="stop-item">
+        <li *ngFor="let stop of selectedBuses; let i = index" class="stop-item">
           <i class="fas fa-map-marker-alt"></i>
-          <strong>Stops: </strong>
+          <strong *ngIf="i !== 0 && i !== selectedBuses.length -1">Stops: </strong>
           <span *ngIf="i === 0">Starts at {{fromQuery}}</span>
           <span *ngIf="i !== 0 && i !== selectedBuses.length -1">{{stop}}</span>
-          <span *ngIf="i === selectedBuses.length -1">Arrives at {{toQuery}}</span>
+          <span *ngIf="i === selectedBuses.length -1 && !showMore" style="color: green;">Arrives at {{toQuery}}</span> 
+          <br>
+          <button *ngIf="i === selectedBuses.length -1 && showMore" class="cancel-button" (click)="showMoreStops()">
+            {{ showStops ? "Hide Stops" : "Show More" }}
+          </button>
         </li>
+
+        <!-- Separate ng-container for the additional stops -->
+        <ng-container *ngIf="showStops">
+          <li *ngFor="let show of showMoreBuses; let i = index" class="stop-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <strong *ngIf="i !== 0 && i !== showMoreBuses.length -1">Stops: </strong>
+            <span *ngIf="i > -2 && i !== showMoreBuses.length -1">{{show}}</span>
+            <span *ngIf="i === showMoreBuses.length -1 && showStops" style="color: green;">Arrives at {{toQuery}}</span> 
+
+          </li>
+        </ng-container>
+
       </ul>
     </div>
   </div>
