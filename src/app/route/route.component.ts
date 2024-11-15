@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Route } from '../Models/route';
 import 'leaflet-routing-machine'
 import { SearchLocationService } from '../Services/searchLocation/search-location.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-route',
@@ -13,6 +14,7 @@ import { SearchLocationService } from '../Services/searchLocation/search-locatio
 })
 export class RouteComponent implements OnInit {
   private map: any;
+  locations$!: Observable<any[]>;
   showMore: boolean = false;
   showStops: boolean = false;
   fromQuery: string = '';
@@ -37,63 +39,59 @@ export class RouteComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
+  
+  
+
   ngOnInit(): void {
     this.isLoading = true;
   
     // Listen for query parameters
     this.route.queryParams.subscribe((params) => {
-      // Retrieve query parameters for 'query1' (from) and 'query2' (to)
       this.fromQuery = params['query1'] || '';
       this.toQuery = params['query2'] || '';
   
       console.log('From:', this.fromQuery);
       console.log('To:', this.toQuery);
   
-      // Check if either 'fromQuery' or 'toQuery' is empty and initialize the map with default location
+      // If both 'fromQuery' and 'toQuery' are missing, initialize the map with default location
       if (!this.fromQuery || !this.toQuery) {
         console.warn('One or both of the query parameters (from or to) are missing.');
-        // If either is missing, use Festac Town, Lagos as the default location
-       // Initialize the map at the starting coordinates
-       this.map = L.map('map').setView([6.4971, 3.3483], 15);
-  
-       const customIcons = L.icon({
-         iconUrl: '../../assets/markerIcons/marker-icon-2x.png',
-         shadowUrl: '../../assets/markerIcons/marker-shadow.png',
-         iconSize: [25, 41],
-         iconAnchor: [12, 41],
-         popupAnchor: [1, -34],
-         shadowSize: [41, 41]
-       });
-
-       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-         attribution: '&copy; OpenStreetMap contributors',
-       }).addTo(this.map);
-
-       // Add marker for the starting location
-       L.marker([6.4971, 3.3483], { icon: customIcons })
-         .addTo(this.map)
-         .bindPopup('Starting Location')
-         .openPopup();
+        this.locations$ = this.searchLocationService.getLocations()
+        this.initializeMapWithDefaultLocation(); // Initialize the map with default location
       } else {
-        // If both queries are present, proceed with usual logic
+        // If both queries are present, proceed with usual logic (retrieve route details)
         this.retrieveRouteDetails();
       }
-  
-      // Get current location and initialize map after geolocation is successful
-      this.getCurrentLocation();
     });
   
-    // Listen for additional parameters (stopName, lat, lon)
-    this.route.queryParams.subscribe((params) => {
-      this.stopName = params['stopName'];
-      this.lat = parseFloat(params['lat']);
-      this.lon = parseFloat(params['lon']);
-  
-      console.log('Stop Name:', this.stopName);
-      console.log('Latitude:', this.lat);
-      console.log('Longitude:', this.lon);
-    });
+    // Get current location and initialize map after geolocation is successful
+    this.getCurrentLocation();
   }
+  
+  private initializeMapWithDefaultLocation() {
+    // Initialize map with a default location (e.g., Festac Town) only when no query parameters are provided
+  
+    const customIcons = L.icon({
+      iconUrl: '../../assets/markerIcons/marker-icon-2x.png',
+      shadowUrl: '../../assets/markerIcons/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+  
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(this.map);
+  
+    L.marker([6.4971, 3.3483], { icon: customIcons })
+      .addTo(this.map)
+      .bindPopup('Festac Axis')
+      .openPopup();
+  }
+  
+
+
   
   
   
@@ -190,7 +188,7 @@ export class RouteComponent implements OnInit {
           // Add marker for the starting location
           L.marker([latitude, longitude], { icon: customIcons })
             .addTo(this.map)
-            .bindPopup('Starting Location')
+            .bindPopup('Festac Axis')
             .openPopup();
   
           if (this.routeDetails && this.routeDetails.toLatitude && this.routeDetails.toLongitude) {

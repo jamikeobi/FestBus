@@ -7,23 +7,52 @@
     <div class="route-map card">
       <h2><i class="fas fa-map"></i> Route Map</h2>
       <div id="map"></div>
+
+      <!-- Nearby Bus Stops Section -->
+      <section
+        class="nearby-section wow fadeIn"
+        data-wow-delay="0.7s"
+        *ngIf="!fromQuery || !toQuery"
+      >
+        <h2>Nearby Bus Stops</h2>
+        <ul
+          class="nearby-list"
+          *ngIf="locations$ | async as Locations"
+          style="cursor: pointer"
+        >
+          <a href="/route?query1=1st%20Avenue&query2=Egbeada%20Close">
+            <li
+              class="nearby-item"
+              *ngFor="let busStop of Locations | slice : 0 : 5"
+            >
+              <h4 style="color: black">{{ busStop.name }}</h4>
+              <p>Available Buses: {{ busStop.buses.join(", ") }}</p>
+            </li>
+          </a>
+        </ul>
+      </section>
     </div>
 
     <div class="location-info">
-      <p><strong>From:</strong> {{ fromQuery || stopName}}</p>
-      <p><strong>To:</strong> {{ toQuery || stopName}}</p>
+      <p><strong>From:</strong> {{ fromQuery || stopName }}</p>
+      <p><strong>To:</strong> {{ toQuery || stopName }}</p>
     </div>
   </div>
 
   <div *ngIf="firstTwoBuses.length > 0" class="directions-wrapper card">
     <h3><i class="fas fa-bus"></i> Buses Available from {{ fromQuery }}:</h3>
     <ul>
-      <li *ngFor="let bus of firstTwoBuses; let i = index" (click)="onBusClick(i)" style="color: rgb(255,3,11);">
+      <li
+        *ngFor="let bus of firstTwoBuses; let i = index"
+        (click)="onBusClick(i)"
+        style="color: rgb(255, 3, 11)"
+      >
         <i class="fas fa-arrow-right"></i> {{ bus }} leaves in 5 minutes
       </li>
     </ul>
   </div>
 
+  <!-- Section 3: Stops Breakdown -->
   <!-- Section 3: Stops Breakdown -->
   <div *ngIf="stopsAlongTheWays" class="popup-overlay">
     <div class="popup-content" (click)="$event.stopPropagation()">
@@ -31,32 +60,55 @@
         <h3><i class="fas fa-directions"></i> Stops along the way</h3>
         <button class="close-btn" (click)="onClosePopup()">✖</button>
       </div>
-      <ul class="stop-list">
+
+      <!-- List of stops that will be displayed when showStops is true -->
+      <ul class="stop-list" *ngIf="showStops || selectedBuses.length > 0">
         <li *ngFor="let stop of selectedBuses; let i = index" class="stop-item">
           <i class="fas fa-map-marker-alt"></i>
-          <strong *ngIf="i !== 0 && i !== selectedBuses.length -1">Stops: </strong>
-          <span *ngIf="i === 0">Starts at {{fromQuery}}</span>
-          <span *ngIf="i !== 0 && i !== selectedBuses.length -1">{{stop}}</span>
-          <span *ngIf="i === selectedBuses.length -1 && !showMore" style="color: green;">Arrives at {{toQuery}}</span> 
-          <br>
-          <button *ngIf="i === selectedBuses.length -1 && showMore" class="cancel-button" (click)="showMoreStops()">
+          <strong *ngIf="i !== 0 && i !== selectedBuses.length - 1"
+            >Stops:
+          </strong>
+          <span *ngIf="i === 0">Starts at {{ fromQuery }}</span>
+          <span *ngIf="i !== 0 && i !== selectedBuses.length - 1">{{
+            stop
+          }}</span>
+          <span
+            *ngIf="i === selectedBuses.length - 1 && !showMore"
+            style="color: green"
+            >Arrives at {{ toQuery }}</span
+          >
+          <br />
+          <button
+            *ngIf="i === selectedBuses.length - 1 && !showStops"
+            class="cancel-button"
+            [ngClass]="{ hidden: showStops }"
+            (click)="showMoreStops()"
+          >
             {{ showStops ? "Hide Stops" : "Show More" }}
           </button>
         </li>
 
-        <!-- Separate ng-container for the additional stops -->
+        <!-- Additional stops when showStops is true -->
         <ng-container *ngIf="showStops">
-          <li *ngFor="let show of showMoreBuses; let i = index" class="stop-item">
+          <li
+            *ngFor="let show of showMoreBuses; let i = index"
+            class="stop-item"
+          >
             <i class="fas fa-map-marker-alt"></i>
-            <strong *ngIf="i !== 0 && i !== showMoreBuses.length -1">Stops: </strong>
-            <span *ngIf="i > -2 && i !== showMoreBuses.length -1">{{show}}</span>
-            <span *ngIf="i === showMoreBuses.length -1 && showStops" style="color: green;">Arrives at {{toQuery}}</span> 
-
+            <strong *ngIf="i !== 0 && i !== showMoreBuses.length - 1"
+              >Stops:
+            </strong>
+            <span *ngIf="i > -2 && i !== showMoreBuses.length - 1">{{
+              show
+            }}</span>
+            <span
+              *ngIf="i === showMoreBuses.length - 1 && showStops"
+              style="color: green"
+              >Arrives at {{ toQuery }}</span
+            >
           </li>
         </ng-container>
-
       </ul>
     </div>
   </div>
-  
 </div>

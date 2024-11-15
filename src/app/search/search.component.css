@@ -375,6 +375,7 @@ body {
 
 /* Individual suggestion items */
 .suggestions li {
+  border-bottom: 1px solid black;
   padding: 10px 15px; /* Add padding for clickable area */
   cursor: pointer; /* Change cursor to pointer */
   transition: background-color 0.3s; /* Smooth background color transition */
